@@ -1,0 +1,77 @@
+Determining if the function sin exists failed with the following output:
+Change Dir: /home/sanath/crossover-techtrial/tools/wt-3.3.5-rc1/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec4064320676/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec4064320676.dir/build.make CMakeFiles/cmTryCompileExec4064320676.dir/build
+make[1]: Entering directory `/home/sanath/crossover-techtrial/tools/wt-3.3.5-rc1/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/sanath/crossover-techtrial/tools/wt-3.3.5-rc1/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec4064320676.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=sin   -o CMakeFiles/cmTryCompileExec4064320676.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-2.8/Modules/CheckFunctionExists.c
+<command-line>:0:23: warning: conflicting types for built-in function ‘sin’ [enabled by default]
+/usr/share/cmake-2.8/Modules/CheckFunctionExists.c:3:6: note: in expansion of macro ‘CHECK_FUNCTION_EXISTS’
+ char CHECK_FUNCTION_EXISTS();
+      ^
+Linking C executable cmTryCompileExec4064320676
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec4064320676.dir/link.txt --verbose=1
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=sin    CMakeFiles/cmTryCompileExec4064320676.dir/CheckFunctionExists.c.o  -o cmTryCompileExec4064320676 -rdynamic 
+CMakeFiles/cmTryCompileExec4064320676.dir/CheckFunctionExists.c.o: In function `main':
+CheckFunctionExists.c:(.text+0x15): undefined reference to `sin'
+collect2: error: ld returned 1 exit status
+make[1]: Leaving directory `/home/sanath/crossover-techtrial/tools/wt-3.3.5-rc1/CMakeFiles/CMakeTmp'
+make[1]: *** [cmTryCompileExec4064320676] Error 1
+make: *** [cmTryCompileExec4064320676/fast] Error 2
+
+
+Determining if the pthread_create exist failed with the following output:
+Change Dir: /home/sanath/crossover-techtrial/tools/wt-3.3.5-rc1/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec3913755180/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec3913755180.dir/build.make CMakeFiles/cmTryCompileExec3913755180.dir/build
+make[1]: Entering directory `/home/sanath/crossover-techtrial/tools/wt-3.3.5-rc1/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/sanath/crossover-techtrial/tools/wt-3.3.5-rc1/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec3913755180.dir/CheckSymbolExists.c.o
+/usr/bin/cc    -o CMakeFiles/cmTryCompileExec3913755180.dir/CheckSymbolExists.c.o   -c /home/sanath/crossover-techtrial/tools/wt-3.3.5-rc1/CMakeFiles/CMakeTmp/CheckSymbolExists.c
+Linking C executable cmTryCompileExec3913755180
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3913755180.dir/link.txt --verbose=1
+/usr/bin/cc       CMakeFiles/cmTryCompileExec3913755180.dir/CheckSymbolExists.c.o  -o cmTryCompileExec3913755180 -rdynamic 
+CMakeFiles/cmTryCompileExec3913755180.dir/CheckSymbolExists.c.o: In function `main':
+CheckSymbolExists.c:(.text+0x16): undefined reference to `pthread_create'
+collect2: error: ld returned 1 exit status
+make[1]: Leaving directory `/home/sanath/crossover-techtrial/tools/wt-3.3.5-rc1/CMakeFiles/CMakeTmp'
+make[1]: *** [cmTryCompileExec3913755180] Error 1
+make: *** [cmTryCompileExec3913755180/fast] Error 2
+
+File /home/sanath/crossover-techtrial/tools/wt-3.3.5-rc1/CMakeFiles/CMakeTmp/CheckSymbolExists.c:
+/* */
+#include <pthread.h>
+
+int main(int argc, char** argv)
+{
+  (void)argv;
+#ifndef pthread_create
+  return ((int*)(&pthread_create))[argc];
+#else
+  (void)argc;
+  return 0;
+#endif
+}
+
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/sanath/crossover-techtrial/tools/wt-3.3.5-rc1/CMakeFiles/CMakeTmp
+
+Run Build Command:/usr/bin/make "cmTryCompileExec3836182145/fast"
+/usr/bin/make -f CMakeFiles/cmTryCompileExec3836182145.dir/build.make CMakeFiles/cmTryCompileExec3836182145.dir/build
+make[1]: Entering directory `/home/sanath/crossover-techtrial/tools/wt-3.3.5-rc1/CMakeFiles/CMakeTmp'
+/usr/bin/cmake -E cmake_progress_report /home/sanath/crossover-techtrial/tools/wt-3.3.5-rc1/CMakeFiles/CMakeTmp/CMakeFiles 1
+Building C object CMakeFiles/cmTryCompileExec3836182145.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTryCompileExec3836182145.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-2.8/Modules/CheckFunctionExists.c
+Linking C executable cmTryCompileExec3836182145
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTryCompileExec3836182145.dir/link.txt --verbose=1
+/usr/bin/cc   -DCHECK_FUNCTION_EXISTS=pthread_create    CMakeFiles/cmTryCompileExec3836182145.dir/CheckFunctionExists.c.o  -o cmTryCompileExec3836182145 -rdynamic -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+make[1]: make[1]: Leaving directory `/home/sanath/crossover-techtrial/tools/wt-3.3.5-rc1/CMakeFiles/CMakeTmp'
+*** [cmTryCompileExec3836182145] Error 1
+make: *** [cmTryCompileExec3836182145/fast] Error 2
+
+

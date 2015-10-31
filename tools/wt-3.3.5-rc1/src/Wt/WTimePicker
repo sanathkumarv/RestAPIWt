@@ -1,0 +1,79 @@
+
+#ifndef WTIME_PICKER_H_
+#define WTIME_PICKER_H_
+
+#include "WCompositeWidget"
+#include "WContainerWidget"
+#include "WTime"
+
+namespace Wt {
+
+/*! \class WTimePicker Wt/WTimePicker Wt/WTimePicker
+ *  \brief A Time Picker
+ *
+ *  \sa WTimeEdit
+ *  \sa WTime
+ *  \sa WTimeValidator
+ *
+ * Styling through CSS is not applicable.
+ *
+ */
+class WT_API WTimePicker : public WCompositeWidget
+{
+public:
+    /*! \brief Creates a new time picker.
+     */
+    WTimePicker(WContainerWidget *parent = 0);
+    
+	/*! \brief Creates a new time picker.
+     */
+    WTimePicker(const WTime &time, WContainerWidget *parent = 0);
+
+    WTime time();
+
+	/*! \brief sets the time
+	 */
+    void setTime(const WTime& time);
+
+	/*! \brief returns the minutes step
+	 */
+    int minuteStep() const { return minuteStep_; }
+	
+	/*! \brief sets the minute step
+	 */
+    void setMinuteStep(int step) { minuteStep_ = step; }
+	
+	/*! \brief sets the second step
+	 */
+    void setSecondStep(int step) { secondStep_ = step; }
+
+	/*! \brief Signal emitted when the value is changed
+	 */
+    Signal<>& selectionChanged() { return selectionChanged_; }
+
+private:
+
+    int minuteStep_;
+	int secondStep_;
+
+    void init(const WTime &time = WTime());
+
+    WText *hourText_;
+    WText *minuteText_;
+    WText *secondText_;
+
+    void incrementMinutes();
+    void decrementMinutes();
+    void incrementHours();
+    void decrementHours();
+	void incrementSeconds();
+	void decrementSeconds();
+
+    Signal<> selectionChanged_;
+
+};
+
+
+} // end namespace Wt
+
+#endif // WTIME_PICKER_H_

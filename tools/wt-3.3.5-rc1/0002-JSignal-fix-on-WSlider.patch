@@ -1,0 +1,35 @@
+From b3c1369b969e256412147be2b88cc7977f681b10 Mon Sep 17 00:00:00 2001
+From: Marco Gulino <marco.gulino@gmail.com>
+Date: Mon, 17 Mar 2014 11:10:27 +0100
+Subject: [PATCH] JSignal fix on WSlider
+
+this solves the sliderMoved() signal not working using a JSlot or a std::string js function with that signal ("JSignal: connect(JSlot): signal does not collect JavaScript from slots").
+---
+ src/Wt/WSlider.C |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/Wt/WSlider.C b/src/Wt/WSlider.C
+index 004b55f..189d179 100644
+--- a/src/Wt/WSlider.C
++++ b/src/Wt/WSlider.C
+@@ -357,7 +357,7 @@ WSlider::WSlider(WContainerWidget *parent)
+     maximum_(99),
+     value_(0),
+     valueChanged_(this),
+-    sliderMoved_(this, "moved"),
++    sliderMoved_(this, "moved", true),
+     paintedSlider_(0)
+ { 
+   resize(150, 50);
+@@ -376,7 +376,7 @@ WSlider::WSlider(Orientation orientation, WContainerWidget *parent)
+     maximum_(99),
+     value_(0),
+     valueChanged_(this),
+-    sliderMoved_(this, "moved"),
++    sliderMoved_(this, "moved", true),
+     paintedSlider_(0)
+ { 
+   if (orientation == Horizontal)
+-- 
+1.5.4.6
+

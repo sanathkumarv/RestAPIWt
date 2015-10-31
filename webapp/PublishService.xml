@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF8"?>
+<messages>
+  <message id="language">Language:</message>
+
+  <message id="abf.form">Add Book Details</message>
+  <message id="abf.title">Book Title (*):</message>
+  <message id="abf.author">Author :</message>
+  <message id="abf.subject">Book Subject:</message>
+  <message id="abf.publisher">Publisher (*):</message>
+  <message id="abf.price">Price:</message>
+  <message id="abf.publishdate">Publish date (dd/mm/yyyy) (*):</message>
+  <message id="abf.synapsis">Synapsys:</message>
+  <message id="abf.sbin">SBIN:</message>
+  <message id="abf.qcode">QR-Code:</message>
+  <message id="abf.choosepublisher">(Choose a Publisher)</message>
+
+  <message id="srf.form">Search by Title/Author/Subject/ISBN or by QR Code</message>
+  <message id="srf.name">Your Name: </message>
+  <message id="srf.mail">Your e-mail Address: </message>
+  <message id="srf.title">Book Title (*):</message>
+  <message id="srf.author">Author :</message>
+  <message id="srf.subject">Book Subject:</message>
+  <message id="srf.publisher">Publisher (*):</message>
+  <message id="srf.sbin">SBIN:</message>
+  <message id="srf.qcode">QR-Code:</message>
+
+  <message id="submit">Submit</message>
+
+  <message id="error.title">Error: please enter book title.</message>
+  <message id="error.publisher">Error: please select a valid publisher name.</message>
+  <message id="error.publishdate">Error: please select a valid date.</message>
+  <message id="error.sbin">Error: please enter the SBIN of the book</message>
+
+  <message id="quit">Quit</message>
+
+  <message id="January">January</message>
+  <message id="February">February</message>
+  <message id="March">March</message>
+  <message id="April">April</message>
+  <message id="May">May</message>
+  <message id="June">June</message>
+  <message id="July">July</message>
+  <message id="August">August</message>
+  <message id="September">September</message>
+  <message id="October">October</message>
+  <message id="November">November</message>
+  <message id="December">December</message>
+
+  <message id="Mon">Mon</message>
+  <message id="Tue">Tue</message>
+  <message id="Wed">Wed</message>
+  <message id="Thu">Thu</message>
+  <message id="Fri">Fri</message>
+  <message id="Sat">Sat</message>
+  <message id="Sun">Sun</message>
+
+  <message id="Close">Close Window</message>
+</messages>
+

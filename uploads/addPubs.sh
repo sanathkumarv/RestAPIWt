@@ -1,0 +1,1 @@
+curl -X POST -d "{'name': 'Gingko Press', 'address':'HamBurg,Germany', 'contact':'mo@gingko.com'}" http://192.168.1.191:8080/api/Publisher -H "Accept: application/json" -H "Content-type: application/json"

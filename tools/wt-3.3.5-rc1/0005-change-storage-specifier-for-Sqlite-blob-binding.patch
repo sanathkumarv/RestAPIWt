@@ -1,0 +1,26 @@
+From 8684f13fead19f541d0b93950cb37943080e4dc8 Mon Sep 17 00:00:00 2001
+From: James Tomson <jtomson@mdsol.com>
+Date: Thu, 22 Jan 2015 12:19:24 -0500
+Subject: [PATCH] change storage specifier for Sqlite blob binding
+
+- fixes a gotcha when a user defines a own sql_value_traits::bind method using blob storage (data local to the bind method would be corrupted when inserted in the DB)
+---
+ src/Wt/Dbo/backend/Sqlite3.C |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/src/Wt/Dbo/backend/Sqlite3.C b/src/Wt/Dbo/backend/Sqlite3.C
+index e6577b4..79aaf65 100644
+--- a/src/Wt/Dbo/backend/Sqlite3.C
++++ b/src/Wt/Dbo/backend/Sqlite3.C
+@@ -199,7 +199,7 @@ public:
+       err = sqlite3_bind_blob(st_, column + 1, "", 0, SQLITE_TRANSIENT);
+     else 
+       err = sqlite3_bind_blob(st_, column + 1, &(*(value.begin())),
+-			      static_cast<int>(value.size()), SQLITE_STATIC);
++			      static_cast<int>(value.size()), SQLITE_TRANSIENT);
+ 
+     handleErr(err);
+   }
+-- 
+1.5.4.6
+

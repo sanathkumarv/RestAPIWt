@@ -1,0 +1,4083 @@
+<!DOCTYPE html PUBLIC
+          "-//W3C//DTD XHTML 1.0 Transitional//EN"
+          "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1" />
+<style type="text/css"> 
+  dt { font-weight: bold; }
+  h3 { text-decoration: underline; }
+  dd { margin-top: 10px; margin-bottom: 10px; }
+  dd p { margin-top: 0px; }
+  dd div { margin: 10px 0px; }
+</style>
+<title>Wt Release notes</title>
+</head>
+<body>
+
+<h1>Wt Release notes</h1>
+
+This file lists important notes on migrating existing applications to
+newer version of Wt. It lists changes in the library that may break
+the way you build Wt, the way you configure Wt or the Wt API and
+behaviour.
+
+<h2>Release 3.3.5 (Sept X, 2015)</h2>
+<p>
+ This release has a focus on bug fixes but also one or two new features:
+</p>
+
+<dl>
+  <dt>
+    <a href="classWt_1_1Chart_1_1WCartesianChart.html">Chart::WCartesianChart</a>
+  </dt>
+  <dd>
+	WCartesianChart has several new features that allow interaction with the
+	chart without server roundtrips. These features include zoom, pan,
+	crosshair and follow curve functionality.
+
+	This is only available if the chart is drawn
+	on an HTML canvas. This is the default rendering method on modern browsers.
+	
+	When enabled, the crosshair will follow mouse movement,
+	and show in the top right corner the coordinate
+	(according to X axis and the first Y axis)  corresponding to this position.
+  </dd>
+  <dt>
+  <a href="classWt_1_1Chart_1_1WAxisSliderWidget.html">Chart::WAxisSliderWidget</a>
+  </dt>
+  <dd>
+	WAxisSliderWidget lets you easily focus on a particular range by selecting an XAxis. It will create a sliding widget where you can change the size of the focused region by dragging the blue handles, and change the position by dragging the selected area. When using touch, the size of this area can also be changed using a pinch movement.
+  </dd>
+  <dt>
+  <a href="classWt_1_1WPainter.html">WPainter</a>, <a href="classWt_1_1WJavaScriptHandle.html">WJavascriptHandle</a>, <a href="classWt_1_1WCanvasPaintDevice.html">WCanvasPaintDevice</a>
+  </dt>
+  <dd>
+  The above functionality was implemented by making client-side interaction possible for a scene rendered
+  on WCanvasPaintDevice. For this purpose, for several primitives used to draw on a canvas, we provide
+  a JavaScript handle and complementary API to manipulate these objects in JavaScript code. In this way you
+  can keep the bulk of the painting code in C++, and allow manipulation from within JavaScript.
+  Such JavaScript handlers have been made available for <a href="classWt_1_1WTransform.html">WTransform</a>, <a href="classWt_1_1WPen.html">WPen</a>, <a href="classWt_1_1WBrush.html">WBrush</a>, <a href="classWt_1_1WPointF.html">WPointF</a>, <a href="classWt_1_1WRectF.html">WRectF</a> and <a href="classWt_1_1WPainterPath.html">WPainterPath</a>.
+  </dd>
+
+  <dt> <a href="classWt_1_1WAnchor.html">WAnchor</a> target (such as this window, or new window) moved to <a href="classWt_1_1WLink.html#afda591cd277562d5c8ea723733290790">WLink</a></dt>
+  <dd>As WLink is used in several places (including for example inside item data models), the target can now be specified in more places in the same consisten way. However, since until now a WAnchor was the owner of the TargetType, this may break existing code which calls WAnchor::setTarget() before WAnchor::setLink(), as the latter overrides the target.
+  </dd>
+
+  <dt>A new <a href="namespaceWt.html#a6c93a6e97016801a310275457e43f333">TargetDownload</a> target was added for links.</dt>
+  <dd>Until now it was recommended to use TargetNewWindow as otherwise this would interfere with the rendering of the current page (since browsers are unaware of the content-type and content-disposition of the target link until after it unloaded the current page. The new TargetDownload option is implemented using the new HTML5 download attribute or, if not supported, by targetting a hidden iFrame contained in the page.
+  </dd>
+
+  <dt>The included SQLite version was updated</dt>
+  <dd>
+  The SQLite version bundled with Wt::Dbo has been updated to version 3.8.10.1. The changelog can be found <a href="https://www.sqlite.org/news.html">here</a>
+  </dd>
+
+  <dt>Support for seconds editing in <a href="classWt_1_1WTimePicker.html#a4d19d3ad8bdf0a9a3e35d84f3d298994">WTimePicker</a></dt>
+  <dd>WTimePicker was missing the seconds, we've also added the setSecondStep() method.
+  </dd>
+
+  <dt><a href="classWt_1_1WCheckBox.html#a2d741874682e9a683d40527b03615d32">WCheckBox::setPartialStateSelectable()</a></dt>
+  <dd>Before it was only possible to set the partial state of the WCheckbox when creating the Widget.
+  We've added a method WCheckBox::setPartialStateSelectable(bool) which will allow the user to select indeterminate state. This is false by default;
+  </dd>
+
+  <dt>New client side connection monitor</dt>
+  <dd>The <a href="classWt_1_1WApplication.html#ab6ae1117e316f1a7b31449aaeb83c9cf">WApplication::setConnectionMonitor()</a> method will let the user register a Javascript object that will be notified on connection changes (connection, disconnection, websockets enabled/disabled..)
+  The monitor will trigger the onChange method of the provided Javascript object</dd>
+
+  <dt>Support for custom HTML tags for a widgets</dt>
+  <dd>We've added <a href="classWt_1_1WWebWidget.html#adf6034e0e715138cae479eae6e324ce6">WWebWidget::setHtmlTagName()</a> that will change the current html tag to the one chosen by Wt by default. This allows the user to create widgets that are not provided by Wt, such as for example semantic tags.
+  </dd>
+
+  <dt>Wt::Dbo: allow to forward declare related classes</dt>
+  <dd>It is now possible to forward declare all classes that are being referenced in a <a href="group__dbo.html#gaa3de862f9544c4d30b8cbcac4b50feba">belongsTo()</a>, <a href="group__dbo.html#ga00a060d5f4764f673948989f21837548">hasOne()</a> or <a href="group__dbo.html#ga570b71f937c991b000b9db01b327a363">hasMany()</a> relation, helping to reduce the compile time pain of Wt::Dbo.</dd>
+</dl>
+
+<hr>
+
+<h2>Release 3.3.4 (Mar 25, 2015)</h2>
+
+<p>
+ This release has a focus on bug fixes but also one or two new features,
+ of which the following are the most notable:
+</p>
+
+<dl>
+  <dt>
+    Support for dedicated session processes with wthttp connector.
+  </dt>
+  <dd>
+    Until now, only the FastCGI connector allowed the use of dedicated
+    processes for individual sessions, by spawning a new process for
+    each new session. This functionality has also been added to the
+    wthttp connector. In this implementation, the manager process will
+    act as a reverse proxy to the dedicated session processes.
+
+    This has as major benefit that there is no longer a choice between
+    dedicated session processes on the one hand (supported by FastCGI)
+    and support for WebSockets on the other hand (supported by the
+    built-in httpd). In fact, there remains little reason to prefer
+    FastCGI over the built-in httpd: in those situations where you
+    want a proper http server as a front-end, you can still use
+    HAproxy or NGINX (or Apache, if you must) as a reverse proxy to
+    wthttp.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WIdentityProxyModel.html">WIdentityProxyModel</a>
+  </dt>
+  <dd>
+    This new proxy model simply forwards the structure of the source
+    model, without any transformation, and can be used for
+    implementing proxy models that reimplement data(), but retain all
+    other characteristics of the source model.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1Chart_1_1WAbstractChart.html#ac895fb1d1437f51629b49246eda66e3d">Chart::WAbstractChart::setAutoLayoutEnabled()</a>
+  </dt>
+  <dd>
+    Until now, you were responsible for configuring the padding around
+    the chart area to accomodate for axis labels, titles, and
+    legend. While this is still the default behaviour, we added an
+    option to let the chart derive the required padding (using
+    approximate font-metrics available server-side).
+  </dd>
+
+
+  <dt>
+    <a href="classWt_1_1Chart_1_1WCartesianChart.html#a1c97590b1bd4ee9324822967d6e72333">Chart::WCartesianChart::setAxis()</a>
+  </dt>
+  <dd>
+    Whereas previously a chart axis was a "value class", it is now a
+    proper polyymorphic class, and you can provide your own
+    implementation. In this way you can customize things like for
+    example label strings.
+  </dd>  
+
+  <dt>
+    Several new features in the 3D charts library.
+  </dt>
+  <dd>
+    <ul>
+      <li><a href="classWt_1_1Chart_1_1WAbstractDataSeries3D.html#a0ac582c98fe58f36e0d60f11b5627656">
+	  setPointSprite()</a>: ability to define sprites for drawing
+	  a data series</li>
+      <li><a href="classWt_1_1Chart_1_1WAbstractGridData.html#a8f99da2ab56c80de400c90992c35f882">pickSurface()</a>:
+	find out which points on a surface are under a given pixel</li>
+      <li><a href="classWt_1_1Chart_1_1WAbstractGridData.html#afc0509b2dff1fa8dbb970266de21f7db">pickBar()</a>:
+	find out which points on a bar on are under a given pixel.</li>
+      <li><a href="classWt_1_1Chart_1_1WAbstractGridData.html#a09c065c802ff9b21d3c2a543e48f58b2">
+	  setIsoLevels()</a>:
+	draw iso lines (on the ground plane of the chart) corresponding
+	to selected z values.</li>
+      <li><a href="classWt_1_1Chart_1_1WAbstractGridData.html#ad74945761f9bfcc2ced42487468c5480">
+	  setClippingLinesEnabled()</a>:
+	ability to clip and optionally draw clipping planes
+      </li>
+      <li>
+	<a href="classWt_1_1Chart_1_1WCartesian3DChart.html#a8adb0ca981382e3e1435fe8e7fcf1d6e">
+	  setIntersectionsEnabled()</a>:
+	ability to draw surface-surface intersection lines.
+      </li>
+    </ul>
+  </dd>
+</dl>
+
+<hr>
+
+<h2>Release 3.3.3 (May 27, 2014)</h2>
+
+<p>
+ This release has a focus on bug fixes but also one or two new features:
+</p>
+
+<dl>
+  <dt>
+    Improved Meta header support.
+  </dt>
+  <dd>
+    Because WApplication meta header API was restricted to only work
+    in certain circumstances, we have now added the ability to define
+    meta headers (with the option to apply them to specific user agents)
+    also in the configuration file.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WWidget.html#ab4086c221a56e81dd067be47303b5862">WWidget::setDeferredToolTip()</a>
+    </dt>
+  <dd>
+    This function is an alternative to setToolTip(), useful when a
+    tooltip text is not trivial to fetch or create. Using this
+    function, the tool tip (HTML) text can now be loaded on-demand
+    instead of needing to be preset on (each) widget. This also works
+    for tooltips set from a WAbstractItemModel using the
+    new <a href="group__modelview.html#ga1d77c4de293aebfacbdde124de06b8b0">ItemHasDeferredTooltip</a>
+    item flag.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WLineEdit.html#ae599502e317ed79d5a1a54dae12d3d10">WLineEdit::setInputMask()</a>
+    </dt>
+  <dd>
+    Support for input masks was added, which guides the user to enter
+    data in the correct format.
+  </dd>
+</dl>
+
+<hr>
+
+<h2>Release 3.3.2 (March 12, 2014)</h2>
+
+<p>
+ This release has a focus on bug fixes and a few larger new developments.
+</p>
+
+<h3>A) New classes:</h3>
+
+<dl>
+  <dt>
+    <a href="classWt_1_1Chart_1_1WCartesian3DChart.html">3D Charts
+    (Chart::WCartesian3DChart, ...)</a>
+  </dt>
+  <dd>
+    A 3D charting library was added, based on
+    <a href="classWt_1_1WGLWidget.html">WGLWidget</a>, and integrated
+    with the existing 2D charting framework.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1Dbo_1_1JsonSerializer.html">Dbo::JsonSerializer</a>
+  </dt>
+  <dd>
+    This is a utility which serializes Dbo objects (including
+    relations) to JSon, leveraging the same persist() function used
+    for serialization to the database.
+  </dd>
+
+</dl>
+
+<h3>B) Main improvements:</h3>
+
+<dl>
+  <dt>
+    <a href="classWt_1_1WBootstrapTheme.html">WBootstrapTheme</a>
+    </dt>
+  <dd>
+    Support for bootstrap version 3 was added, so now you have the
+    choice between botstrap version 2 or 3. Needless to say, you
+    should probably target version 3 for new development work if you
+    can live with its restricted browser support.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WGLWidget.html">WGLWidget</a>
+    </dt>
+  <dd>
+    Next to the existing client-side WebGL-based implementation, a
+    server-side OpenGL-based implementation was added for fallback
+    scenarios where WebGL is not available, or when scene complexity
+    is so big that a server-side solution is simply better performing
+    because of lower bandwidth needed.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WRasterImage.html">WRasterImage</a>
+    </dt>
+  <dd>
+    Next to the GraphicsMagick-based implementation, a skia-based
+    implementation has been added (which provides much higher
+    performance most notably on Windows platforms).
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WString.html">WString</a>
+    </dt>
+  <dd>
+    Until now, Wt defaults to the C++ global locale for conversion
+    between a string literal (std::string, const char *) and
+    WString. In practice, UTF-8 is an (increasingly) better choice
+    since UTF-8 is a pragmatic encoding covering the entire Unicode
+    range, and the encoding used by the library throughout. We've now
+    added a setDefaultEncoding() function which can be used to
+    configure the default encoding as UTF-8.
+  </dd>
+
+  <dt>
+    wthttp HTTP/WebSockets front-end server
+  </dt>
+  <dd>
+    We've given the http front-end a much needed overhaul, making it
+    deal better with long-lived connections typical for WebSockets
+    applications, and fix some nasty issues at the same time.
+    We also took the opportunity to optimize its performance by
+    reducing the number of system calls for writing request
+    responses, and by avoiding memory allocations during request parsing.
+  </dd>
+</dl>
+
+<h3>C) Non-backwards compatible changes</h3>
+
+<dl>
+  <dt>
+    <a href="classWt_1_1WDatePicker.html">WDatePicker</a>,
+    <a href="classWt_1_1WDateEdit.html">WDateEdit</a>
+  </dt>
+  <dd>
+    The date pickers will now default to interpreting a single click
+    as a date selection and also closing the calendar.
+  </dd>
+</dl>
+<hr>
+
+<h2>Release 3.3.1 (October, 16 2013)</h2>
+
+<p>
+ This release has a focus on bug fixes and other cleanups after the big
+ changes that went into 3.3.0.
+</p>
+
+<h3>A) New classes:</h3>
+
+<dl>
+  <dt>
+    <a href="classWt_1_1WLocalDateTime.html">WLocalDateTime</a>
+  </dt>
+  <dd>
+    So far, the library only provided date/time classes that dealt with
+    UTC time (or that at least is the intended use). In this release
+    we have added functionality to also deal with date's in a specific
+    time zone, which includes this new type as well as improvements in
+    WDateTime to convert to local date time, and time zone information
+    in WEnvironment and WLocale.
+  </dd>
+
+</dl>
+
+<h3>B) Main improvements:</h3>
+
+<dl>
+  <dt>
+    <a href="classWt_1_1WComboBox.html">WComboBox</a>
+    </dt>
+  <dd>
+    The combo box now interprets LevelRole data to display headers
+    (using HTML &lt;optgroup&lt; elements). Another improvement is
+    that now the combobox saves its single selection while the model
+    is updated.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WDialog.html">WDialog</a>
+    </dt>
+  <dd>
+    Modal dialogs can now be created and destroyed in any order
+    without confusing the 'silk screen'. We now also consistently
+    interpret an enter press in the dialog to invoke the default
+    button added to the dialog footer (if there is one).
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WMessageBox.html">WMessageBox</a>
+    </dt>
+  <dd>
+    Several improvements include the ability to indicate what buttons
+    are the default and escape buttons with setDefaultButton() or
+    button->setDefault() and setEscapeButton(), and the (long overdue)
+    implementation of icons!
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WTextEdit.html">WTextEdit</a>
+    </dt>
+  <dd>
+    We've added support for TinyMCE 4.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1Signal.html">Signal</a>
+    </dt>
+  <dd>
+    For boost versions 1.52 or later, we now support the
+    Boost.Signals2 library for the signals implementation.
+  </dd>
+
+  <dt>
+    <a href="namespaceWt_1_1Render.html">Render library</a>
+    </dt>
+  <dd>
+    We've added a CSS style sheet parser which will parse and apply
+    style rules in &lt;style&gt; blocks (or loaded through the API),
+    and expanded CSS support to much improvemed table rendering
+    (including border-collapse border model and repeated table
+    headers), relative/absolute positioning, and page-break-before/after
+    support.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1Auth_1_1AbstractUserDatabase.html">Auth::AbstractUserDatabase</a>
+  </dt>
+  <dd>
+    A setIdentity() method was added to modify an existing identity
+    (e.g. username) and updateAuthToken() was added to update an
+    existing token (e.g. keeping the expiration time but changing the
+    hash).
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1Dbo_1_1Query.html">Dbo::Query</a>
+  </dt>
+  <dd>
+    Added a reset() function which resets previous bound arguments.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1Dbo_1_1QueryModel.html">Dbo::QueryModel</a>
+  </dt>
+  <dd>
+    The model now implements toRawIndex() and fromRawIndex() methods to
+    allow selection to persist across layout changes (e.g. resorting).
+  </dd>
+
+  <dt>
+    <a href="group__json.html">Wt::Json (JSON library)</a>
+  </dt>
+  <dd>
+    We've added serialization functions to complement the parsing API.
+  </dd>
+
+  <dt>
+    <a href="group__mail.html">Wt::Mail (SMTP library)</a>
+  </dt>
+  <dd>
+    We've added attachment support, and optional indication of the local
+    sender date.
+  </dd>
+
+</dl>
+
+<h3>C) Non-backwards compatible changes</h3>
+
+<dl>
+  <dt>
+    <a href="classWt_1_1WDate.html">WDate</a>,
+    <a href="classWt_1_1WDateTime.html">WDateTime</a>
+    <a href="classWt_1_1WTime.html">WTime</a>
+  </dt>
+  <dd>
+    We've deprecated the exceptions (Invalid[Date][Time]Exception)
+    that were thrown by these classes when one attempted to compute or
+    use an 'invalid' value. These exceptions are no longer thrown.
+    Instead, we now documented what value
+    (usually 'null') is returned when one attempts to do operations on
+    such a date/time class, which makes the behaviour more consistent
+    with how Qt's equivalent classes behave.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WMessageBox.html">WMessageBox</a></dt>
+  <dd>
+    The buttons() method has been renamed to standardButtons(), and
+    buttons() now return the actual list of added buttons.
+  </dd>
+</dl>
+<hr>
+
+<h2>Release 3.3.0 (April, 8 2013)</h2>
+
+<p>
+ This release focusses on a reorganization of Wt's theme
+ infrastructure, with the objective of
+ supporting <a href="http://twitter.github.com/bootstrap/">Twitter's
+ Bootstrap CSS framework</a> as a new theme. At the same time we've
+ added a number of widgets for which Twitter Bootstrap provides
+ styling.
+</p>
+
+<p>It is our intention to support the Bootstrap theme (or more
+ specifically, the Bootstrap class names) alongside the themes we
+ already supported (which are based on our own class names). Ignoring
+ what Bootstrap brings, you should be able to upgrade to this release
+ without too much trouble, although you may need to adapt some CSS
+ stylesheets as we did reorganize a number of things which were
+ required for Bootstrap and were a good idea for our own CSS
+ stlesheets too.</p>
+
+<h3>A) New classes:</h3>
+
+<dl>
+  <dt>
+    <a href="classWt_1_1WTheme.html">WTheme</a>,
+    <a href="classWt_1_1WCssTheme.html">WCssTheme</a>,
+    <a href="classWt_1_1WBootstrapTheme.html">WBootstrapTheme</a>,
+  </dt>
+  <dd>
+    Theme support classes for Wt. The role of a theme is to:
+    <ul>
+      <li>Load the CSS stylesheets for a new session</li>
+      <li>Annotate newly created widgets with appropriate style
+      classes</li>
+    </ul>
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WDateEdit.html">WDateEdit</a>
+  </dt>
+  <dd>
+    Functionally almost the same as a WDatePicker, this class
+    specializes WLineEdit and is thus a WFormWidget, making it much
+    easier to use in WTemplateFormView.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WLocale.html">WLocale</a>
+  </dt>
+  <dd>
+    This class supports localization for number formatting and
+    extends the simple localization support we had in the previous
+    versions of Wt (which as only effect had the selection of
+    a different language for the resource bundles). It's main
+    added value of native C++ support for localization is that it
+    also affects client-side handling and parsing of number values,
+    i.e. in <a href="classWt_1_1WIntValidator.html">WIntValidator</a> and
+    <a href="classWt_1_1WDoubleValidato.htmlr">WDoubleValidator</a>.
+  </dd>
+  
+  <dt>
+    <a href="classWt_1_1WNavigationBar.html">WNavigationBar</a>
+  </dt>
+  <dd>
+    A navigation bar styles a menu as a typical top-level bar
+    (currently only styled in the Bootstrap Theme).
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WPopupWidget.html">WPopupWidget</a>
+  </dt>
+  <dd>
+    A base class to simplify the creation of popup widgets that
+    typically assist in editing or provide circumstancial information
+    for another widget.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WSplitButton.html">WSplitButton</a>
+  </dt>
+  <dd>
+    A split button, which combines a button and a popup menu
+    (currently only styled in the Bootstrap Theme).
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WToolBar.html">WToolBar</a>
+  </dt>
+  <dd>
+    A button tool bar (currently only styled in the Bootstrap Theme)
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1Dbo_1_1backend_1_1MySQL.html">Dbo::MySQL</a>
+  </dt>
+  <dd>
+    A MariaDB/MySQL backend for Wt::Dbo. This is based on the work
+    from Paul Harrisson who maintained this backend so far outside the
+    Wt distribution. The backend has been designed for MariaDB, but
+    should work fine for MySQL as well.
+  </dd>  
+</dl>
+
+<h3>B) Main improvements:</h3>
+
+<dl>
+  <dt>
+    <a href="classWt_1_1Mail_1_1Message.html">Mail::Message</a>
+  </dt>
+  <dd>
+    Added API support for additional SMTP headers.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WDatePicker.html">WDatePicker</a>,
+    <a href="classWt_1_1WSuggestionPopup.html">WSuggestionPopup</a>
+  </dt>
+  <dd>
+    The setGlobalPopup() functionality has been deprecated and does no
+    longer have any effect, since a new improved algorithm is being
+    used to anchor the popup to the DOM which no longer requires this
+    workaround.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WDialog.html">WDialog</a>
+  </dt>
+  <dd>
+    Addition of a footer() method that returns a container for dialog
+    footer elements, typically buttons.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WFormModel.html">WFormModel</a>
+  </dt>
+  <dd>
+    Addition of a validator() function that returns the validator for
+    a field set using setValidator(), 
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WGLWidget.html">WGLWidget</a>
+  </dt>
+  <dd>
+    Support for binary transfers which avoids serialization and
+    deserialization of floats to text.
+  </dd>
+  
+  <dt>
+    <a href="classWt_1_1WPushButton.html">WPushButton</a>
+  </dt>
+  <dd>
+    A push button can now act as a toggle button, using setCheckable()
+    and related API (currently only styled in the Bootstrap Theme) and
+    can be linked to a popup menu using setMenu().
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WStackedWidget.html">WStackedWidget</a>
+  </dt>
+  <dd>
+    When switching between current widgets, the stacked widget will
+    now record and restore the current scroll position, providing a
+    much improved user experience when using the stacked widget for
+    the 'main' contents of an application.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WStringListModel.html">WStringListModel</a>
+  </dt>
+  <dd>
+    Full support was added for storing data of all roles, lifting the
+    requirement to use another model such as WStandardItemModel for
+    simple MVC widgets like WComboBox or WSuggestionPopup simply to be
+    able to store UserRole data.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WTemplate.html">WTemplate</a>
+  </dt>
+  <dd>
+    Added a new standard function (Functions::block) which allows the
+    definition and use of a macro block inside a placeholder, which is
+    in particular useful for forms which have repetitive formatting
+    for each field.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WTemplateFormView.html">WTemplateFormView</a>
+  </dt>
+  <dd>
+    Several API improvements: A new setFormWidget() allows the
+    definition of the form widget for editing a field which
+    is a more useful alternative compared to reimplement
+    createFormWidget(). It also allows the optional
+    definition of functions to update the view/model values, which
+    avoids the need for specializing updateViewField() and
+    updateModelField() these latter two functions have been deprecated
+    in favour of two new functions updateViewValue() and
+    updateModelValue() which only update the value but not other
+    aspects such as visibility, validation state, or messages.
+  </dd>
+  
+  <dt>
+    Built-in httpd improvements
+  </dt>
+  <dd>
+    A redundant copy operation of the response generated and sent by
+    Wt has been removed, using scatter-gather I/O implemented by
+    boost::asio instead.
+  </dd>
+</dl>
+
+<h3>C) Non-backwards compatible changes</h3>
+
+<dl>
+  <dt>
+    <a href="classWt_1_1WMenuItem.html">WMenuItem</a>
+  </dt>
+  <dd>
+    While in previous version of Wt, this class was only a data class
+    that held the information related to an item, in 3.3.0 we modified
+    this so that this class represents the widget itself. If you were
+    redefining protected methods to customize the widget
+    (i.e. createItemWidget() and updateItemWidget()), then this will no
+    longer work as expected. The new system should be easier to
+    customize (since you can simply specialize WMenuItem itself).
+    In addition, we've simplified the rendering of a menu item so that
+    a redundant layer of spans (or div's) has been removed. It makes
+    the menu more consistent with the way CSS designers expect a menu
+    to rendered, and this was done (you can guess the theme of this
+    release by now ?) to be compatible with bootstrap's CSS styles.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WApplication.html">WApplication::locale()</a>
+  </dt>
+  <dd>
+    This now returns a WLocale object instead of the string
+    designation of the locale (which you can query by calling name())
+    on the locale object.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WCalendar.html">WCalendar</a>
+  </dt>
+  <dd>
+    The markup for this class has changed, and thus customized CSS
+    will need to be updated.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WMenuItem.html">WPopupMenuItem</a>
+  </dt>
+  <dd>
+    The popup menu item class has been merged with WMenuItem (and
+    WPopupMenu is now a specialized WMenu). This should not have
+    noticable API changes, except for the changes in markup and CSS
+    documented above.
+  </dd>
+  
+  <dt>
+    <a href="classWt_1_1WTreeNode.html">WTreeNode</a>,
+    <a href="classWt_1_1WTreeTable.html">WTreeTable</a>
+    <a href="classWt_1_1WTreeView.html">WTreeView</a>
+  </dt>
+  <dd>
+    The markup for tree rendering has been changed (to using nested
+    unordered list instead of nested tables), and thus customized CSS
+    will need to be updated. The only API consequence is that
+    WTreeNode::labelArea() is no longer returning a WTableCell but
+    instead a WContainerWidget.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WTreeView.html">WTreeView</a>,
+    <a href="classWt_1_1WTableView.html">WTableView</a>
+  </dt>
+  <dd>
+    Event handling (clicked(), doubleClicked(), ... ) has been
+    generalized: events that are not generated on an item (but for
+    example in empty space below the items) will now also
+    generate these events, but then with an invalid model index.
+    You may thus need to adapt current code to check whether the model
+    index that is returned is valid.
+  </dd>
+</dl>
+<hr>
+
+<h2>Release 3.2.3 (November, 1 2012)</h2>
+
+<p>
+ This release contains mostly bug fixes and one new feature: a payment
+ processing API.
+</p>
+
+<h3>A) New namespaces:</h3>
+
+<dl>
+  <dt>
+    <a href="group__payment.html">Wt::Payment (payment handling)</a>
+  </dt>
+  <dd>
+    This namespace contains services and back-end classes for dealing
+    with online payment brokers. At the moment there is support for
+    PayPal's Express Checkout service.
+  </dd>
+</dl>
+
+<h3>B) Main improvements:</h3>
+
+<dl>
+  <dt>
+    Layout improvements.
+  </dt>
+  <dd>
+    <p>
+      If you had massive trouble migrating to 3.2.2 because of the
+      layout rewrite, then you'll appreciate the efforts we've made to
+      make the layout algorithms in 3.2.3 much more robust and
+      consistent.
+    </p>
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1Dbo_1_1QueryModel.html">Dbo::QueryModel</a>:
+    added a mechanism for stable row data.
+  </dt>
+  <dd>
+    <p>
+      A common nuisance when working with the QueryModel (which
+      retrieves data from the database as needed), is that concurrent
+      database modifications such as insertions of new data, may
+      interfere with the model's mapping of rows to objects (this is
+      in fact a common problem with most ORM's indeed). This mapping
+      may be important, especially when you want to process the user's
+      selection of one or more rows selected by the user, in e.g. a
+      table view. We've added a mechanism to assure that one can
+      request the model for data at a given row, which is guaranteed
+      to be the same row that has been previously retrieved, using the
+      stableResultRow() method. It works by default for simple queries
+      (returning data from one table), but can be easily customized
+      for more complex queries.
+    </p>
+  </dd>
+
+  <dt>
+    <a href="namespaceWt_1_1Render.html">Render library:</a>
+    improved support for %-based block sizes and table rendering
+  </dt>
+  <dd>
+    <p>
+      Support was added for %-based sizes for block widths and table
+      cell widths. In addition, table rendering in Wt::Render has been
+      improved to support repeating headers (&lt;thead&gt; sections)
+      for multi-page tables, and explicit page breaks (using the css
+      page-break-after/before properties).
+    </p>
+  </dd>
+
+</dl>
+
+<h3>C) Non-backwards compatible changes</h3>
+
+<dl>
+  <dt>
+    <a href="classWt_1_1Dbo_1_1backend_1_1Sqlite3.html">Dbo::backend::Sqlite3</a>
+  </dt>
+
+  <dd>
+    <p>We've changed the implementation of the storage ISO8601AsText
+    format for time stamps (datetime). In the new, corrected,
+    implementation, we generate dates using 'T' as the separator
+    between date and time (as mandated by ISO8601), while the old
+    behaviour used a space ('&nbsp;') instead as the
+    separator. Sqlite3 supports either format equally. This may
+    however break some applications which use queries for an exact
+    date (or a date comparison), as the results may be affected.
+    </p>
+
+    <p> The old behaviour is still available as PseudoISO8601AsText,
+    which can be configured using
+    <tt>connection.setDateTimeStorage(Wt::Dbo::SqlDateTime,
+    Wt::Dbo::backend::Sqlite3::PseudoISO8601AsText)</tt>
+    </p>
+  </dd>
+<hr>
+
+<h2>Release 3.2.2 (July, 23 2012)</h2>
+
+<p>
+ This release contains mostly bug and feature improvements, but
+ also a rewrite of the layout managers in Wt (WBoxLayout and
+ WGridLayout), and this comes with some changes in (in most cases
+ previously undefined) behaviour.
+</p>
+
+<h3>A) New classes:</h3>
+
+<dl>
+  <dt>
+    <a href="classWt_1_1WSslInfo.html">WSslInfo</a>
+  </dt>
+  <dd>
+    Class containing information on a client-side certificate that may
+    have been configured for a SSL connection, and which can be used
+    for authentication (accessible from
+    <a href="classWt_1_1WEnvironment.html">WEnvironment</a>).
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1Dbo_1_1weak__ptr.html">Wt::Dbo::weak_ptr</a>
+  </dt>
+  <dd>
+    A weak variant of Wt::Dbo::ptr which is used to implement
+    One-to-One relations (see also
+    <a
+    href="group__dbo.html#ga00a060d5f4764f673948989f21837548">Wt::Dbo::hasOne()
+    </a>).
+  </dd>
+
+</dl>
+
+<h3>B) Main improvements:</h3>
+
+<dl>
+  <dt>
+    Rewrite of <a href="classWt_1_1WLayout.html">WBoxLayout, WGridLayout</a>
+  </dt>
+  <dd>
+    <p>
+    The layout managers have been reimplement, to address various
+    issues with the old implementation, including API (in particular the wonked
+    side-effects of AlignTop | AlignJustify) inconsistencies and bugs.
+    </p>
+
+    <p>The new implementation no longer uses tables when JavaScript
+    is available, but instead using JavaScript-based layout with
+    absolute positioning. The table-based implementation is still kept
+    for plain HTML sessions (and progressive bootstrap). The code now
+    uses exactly the same layout logic for both horizontal and
+    vertical layout (but giving precedence to horizontal layout) and
+    should be much more consistent (and perhaps also more
+    performant). However, because of the many complexities and
+    problems with the old code (inconsistent behaviour), you may see
+    issues while upgrading. Please see the "Non-backwards compatible
+    changes" below for hints on how to deal with this.</p>
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WAbstractItemView.html">WAbstractItemView</a>
+  </dt>
+  <dd>
+    <p>
+    A drag &amp; drop mime-type can now be specified on a per-item
+    basis using a new <a
+    href="group__modelview.html#ga0ae864e12320f9f89172735e075ed068">ItemDataRole</a>,
+    and the mime-type for the entire selection is computed
+    from these individual mime-types.
+    </p>
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WInteractWidget.html">WInteractWidget</a>
+  </dt>
+  <dd>
+    A new method <a href="classWt_1_1WInteractWidget.html#a60423e777cffa89e6d1373fd25754099">setMouseOverDelay()</a> allows to specify a delay for
+    generating the mouseWentOver() event.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1Auth_1_1AbstractUserDatabase.html">Auth::AbstractUserDatabase</a>
+  </dt>
+  <dd>
+    A new method <a href="classWt_1_1Auth_1_1AbstractUserDatabase.html#a5067e569748cfad8c3356735a33aa10f">deleteUser()</a> was added, which deletes a user and all
+    related authentication information.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1Chart_1_1WCartesianChart.html">Chart::WCartesianChart</a>
+  </dt>
+  <dd>
+    A new method <a href="classWt_1_1Chart_1_1WCartesianChart.html#aa6c394c4d9a801d088b7b02c3fd66b28">setAxisPadding()</a> was added, which configures the
+    amount of adding between the chart area and the axes.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1Chart_1_1WDataSeries.html">Chart::WDataSeries</a>
+  </dt>
+  <dd>
+    A new method <a href="classWt_1_1Chart_1_1WDataSeries.html#ab0dbcd9bcbc0f39a042eb36aa930def4">setCustomMarker()</a> was added which allows the use of a
+    user-defined path for the markers. A new role
+    MarkserScaleFactorRole was added which allows overriding the
+    marker size based on item model data.
+  </dd>
+
+</dl>
+
+<h3>C) Non-backwards compatible changes</h3>
+
+<dl>
+  <dt>
+    <a href="classWt_1_1WLayout.html">WBoxLayout, WGridLayout</a>
+  </dt>
+  <dd>
+    While migrating old code to this version, here are some tips:
+    <ol>
+      <li><p>Alignment flags</p>
+      <p>Previously, specifying an alignment for a widget in a
+      layout, or for the layout when set to a container, had a double
+      meaning. Not only would it implement the given alignment but also
+      revert to passively letting HTML layout decide the layout of the
+      contents, and adjust the parent (layout respectively container)
+      accordingly. This had all kinds of side effects such as not
+      propagating the size of layout-size-aware widgets and quirks in
+      the vertical alignment.</p>
+      <p><a href="classWt_1_1WContainerWidget.html#aff9884c8efdf90974077e96bcb1701db">WContainerWidget::setLayout(layout, alignment)</a> has been
+      deprecated and will be removed from a future release. This call
+      was almost always used to let the parent container resize to fit
+      the size of the contained children, instead of fitting children
+      in the parent container. This behaviour is now
+      automatically deduced based on an (empty) size of the parent
+      container. In case this heuristic does not work, then setting a
+      non-0 maximum size on the container using <a href="classWt_1_1WWebWidget.html#a9b83805a5b8090d296ae4b5939fc9d11">setMaximumSize()</a> will
+      act as a trigger, with the added benefit that the parent will only
+      be allowed to resize up to a specified maximum size.</p>
+      <p>An alignment specified in
+      <a href="classWt_1_1WBoxLayout.html#a7c1ec58e25d0b7add93f5f4342844db6">W(Box/Grid)Layout::addWidget(widget, stretch, alignment)</a> now
+      purely affects the alignment but has no other side effects. The
+      perferred and minimum sizes of a child widget or layout is now
+      always taken into account.</p>
+      </li>
+      <li><p>Child item sizes</p>
+      <p>The layout algorithm is now implemented entirely in
+      JavaScript, and is more gentle when dealing with a combination
+      of cells (or columns/rows) that have a stretch factor and others
+      that don't. Previously, a minimum (or fixed) size would be used
+      to layout items that do not have a stretch factor. This had for
+      example as a consequence that a WText would be narrowed down to its
+      minimum width by using word wrapping throughout. Now, the
+      preferred size is used for a child item, and shrinking to a minimum
+      size only if necessary.</p>
+      <li><p>Progressive bootstrap</p>
+      A layout in the first page of an application rendered using
+      progressive bootstrap will no longer fully upgrade to a full
+      JavaScript version, but will result in a hybrid (between
+      table-based and JavaScript-based). If it doesn't work out as you'ld
+      expect, then you should reconsider the use of progressive bootstrap,
+      or the use of a layout manager in your first page.
+      </li>
+    </ol>
+  </dd>
+</dl>
+
+<hr>
+
+<h2>Release 3.2.1 (March 16, 2012)</h2>
+
+<p>
+  This release contains mostly bug and feature improvements.
+</p>
+
+<h3>A) New classes:</h3>
+
+<dl>
+  <dt>
+    <a href="classWt_1_1WFormModel.html">WFormModel</a>
+  </dt>
+  <dd>
+    A model class for forms. These models are used in Wt::Auth as the
+    basis for RegistrationModel and AuthModel, and allow a more
+    straight-forward customization of the underlying behavior of these
+    forms.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WReadOnlyProxyModel.html">WReadOnlyProxyModel</a>
+  </dt>
+  <dd>
+    A proxy model class which allows to share a source model
+    read-only between multiple sessions.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WTemplateFormView.html">WTemplateFormView</a>
+  </dt>
+  <dd>
+    A WTemplate-based standard view implementation that works in conjunction
+    with WFormModel.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1Auth_1_1AuthModel.html">Auth::AuthModel</a>
+  </dt>
+  <dd>
+    A model that implements authentication logic.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1Auth_1_1FacebookService.html">Auth::FacebookService</a>
+  </dt>
+  <dd>
+    An OAuth-2.0 based authentication service implementation for
+    Facebook.
+  </dd>
+
+  <dt>
+    <a href="namespaceWt_1_1Utils.html">Wt::Utils</a>
+  </dt>
+  <dd>
+    This namespace contains a number of utility functions that we
+    found useful in projects using Wt. They relate mostly to
+    lower-level encoding and decoding functions: base64-, hex-, html-,
+    and url-encoding/decoding.
+  </dd>
+</dl>
+
+<h3>B) Main improvements:</h3>
+
+<dl>
+  <dt>
+    <a href="classWt_1_1WApplication.html">WApplication</a>
+  </dt>
+  <dd>
+    A new method, WApplication::bind(), is useful in combination with
+    WServer::post() to avoid posting to a method of a deleted object,
+    leveraging the same life-time tracking as with signal connections.
+  </dd>
+
+  <dt>
+    <a href="namespaceWt_1_1Render.html">Render library</a>
+  </dt>
+  <dd>
+    A large number of performance improvements, especially for table
+    layout and rendering.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1Chart_1_1WAxis.html">Chart::WAxis</a>
+  </dt>
+  <dd>
+    DateScale and DateTimeScale axes have improved auto-configuration of
+    limits and timesteps, now taking into account the resolution.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1Dbo_1_1Transaction.html">Dbo::Transaction</a>
+  </dt>
+  <dd>
+    We've modified the default transaction outcome: a transaction will
+    now automatically commit(), unless the transaction is being
+    destroyed (goes out of scope) because an exception is being
+    thrown, in which case the transaction will rollback(). Previously,
+    an uncomitted transaction would always rollback() on destruction.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1Dbo_1_1ptr.html">Dbo::ptr</a>
+  </dt>
+  <dd>
+    Added a session() method, returning the session with which the
+    session has been associated.
+  </dd>
+
+  <dt>
+    Shipped SHA-1 implementation.
+  </dt>
+  <dd>
+    We now ship a SHA-1 implementation with Wt and this thus relaxes
+    the need for OpenSSL to implement WebSockets and
+    Auth::SHA1HashFunction.
+  </dd>
+</dl>
+
+<h3>C) Non-backwards compatible changes</h3>
+
+<dl>
+  <dt>
+    <a href="classWt_1_1WTextEdit.html">WTextEdit</a>
+  </dt>
+  <dd>
+    Due to backwards incompatiblity of IE9, we now require the latest
+    version of TinyMCE (3.5b1 or later).
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1Auth_1_1AuthWidget.html">Auth::AuthWidget</a>
+  </dt>
+  <dd>
+    A number of API methods that configure and access the configuration
+    were moved to the new Auth::AuthModel class which can be accessed from
+    the widget using model().
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1Auth_1_1AbstractPasswordService_1_1AbstractStrengthValidator.html">Auth::AbstractPasswordService::AbstractStrengthValidator</a>
+  </dt>
+  <dd>
+    The API was simplified to be less unorthodox: validate() now
+    returns a Result that contains all the information for it.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1Http_1_1Client.html">Http::Client</a>
+  </dt>
+  <dd>
+    We've changed the signature of the parseUrl() utility function to
+    parse the URL into a URL structure instead of a collection of
+    string parameters.
+  </dd>
+</dl>
+
+<hr>
+
+<h2>Release 3.2.0 (November 29, 2011)</h2>
+
+<p>
+  This release contains a number of new modules, as well as the usual
+  batch of <a href="http://redmine.emweb.be/versions/show/13">bug
+  fixes</a> and small feature improvements.
+</p>
+
+<p>
+  In this release we also change the WValidator API in a way that it
+  is likely to break existing applications.
+</p>
+
+<h3>A) New namespaces:</h3>
+
+<dl>
+  <dt>
+    <a href="group__json.html">Wt::Json (JSON handling)</a>
+  </dt>
+  <dd>
+    This namespace contains classes (Object, Value, Array) which map
+    the JSON types in C++. It also contains a parser to deserialize
+    JSON. A writer to serialize to JSON hasn't been added yet.
+  </dd>
+
+  <dt>
+    <a href="group__mail.html">Wt::Mail (SMTP protocol)</a>
+  </dt>
+  <dd>
+    This namespace contains a Client to send mail messages. It is
+    currently offering only limited functionality w.r.t. SMTP protocol
+    handling, but contains enough functionality to send standards
+    compliant plain-text/HTML mails, with full support for unicode.
+  </dd>
+
+  <dt>
+    <a href="group__auth.html">Wt::Auth (Authentication)</a>
+  </dt>
+  <dd>
+    <div>This namespace contains model and view classes for
+      authentication. It implements password authentication using best
+      practices, email verifiation, remember-me tokens, and provisions
+      support for federated login with an implementation of OAuth 2.0
+      for authentication using third party identity providers.</div>
+
+    <div>We expect that the API may still evolve, especially with
+      respect to OAuth 2.0 (which is a draft protocol), and its use
+      for OpenID Connect, which is the main use case for OAuth within
+      the authentication module.</div>
+  </dd>
+</dl>
+
+<h3>B) New classes:</h3>
+
+<dl>
+  <dt>
+    <a href="classWt_1_1WException.html">WException</a>
+  </dt>
+  <dd>
+    We have cleaned up the use of exceptions within Wt. We have
+    converted numerous cases where an exception used to be thrown to
+    error logging, if the exception was thrown to indicate an API
+    problem. When the API problem is not resulting in a corrupt state,
+    we now log the error instead of terminating the session. All other
+    cases now use an exception that implements WException. This does
+    not affect situations where a std::exception was advertised in the
+    API.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WIOService.html">WIOService</a>
+  </dt>
+  <dd>
+    <div>
+      Previously, boost::asio was used only in the built-in httpd as a
+      portable asynchronous I/O reactor implementation. We have now
+      moved this into the Wt library itself, where it is now used
+      instead of a dedicated thread pool for dispatching requests (and
+      other server events), and where it is also used for asynchronous
+      I/O by e.g. the Http::Client.
+    </div>
+    <div>
+      The WIOService specializes a boost::asio::service, and integrates
+      the thread pool that runs the service.
+    </div>
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WStringStream.html">WStringStream</a>
+  </dt>
+  <dd>
+    This is a utility class that we have used since long in Wt. It is
+    a more efficient replacement for std::stringstream, with mostly a
+    compatible API (at least for our purposes). For our purposes it is
+    typically a factor of two or more faster.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1Http_1_1Client.html">Http::Client</a>, 
+    <a href="classWt_1_1Http_1_1Message.html">Http::Message</a>
+  </dt>
+  <dd>
+    <div>We have added an implementation of a Http(s) client. The client
+    is intended for consuming web services in Wt, and handles GET or
+    POST requests. It is not suitable (yet) for large responses, since
+    it buffers the entire response internally.</div>
+    <div>The client uses asynchronous I/O, using the WIOService that is
+    found in the current WServer instance.</div>
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1Dbo_1_1backend_1_1Firebird.html">Dbo::Firebird</a>
+  </dt>
+  <dd>
+    <div>Lukasz Matuszewski contributed a Firebird backend
+    implementation, thanks !</div>
+  </dd>
+</dl>
+
+<h3>C) Main improvements:</h3>
+
+<dl>
+  <dt>
+    <a href="classWt_1_1WAbstractItemView.html">WAbstractItemView</a>
+  </dt>
+  <dd>
+    Added a setHeaderWordWrap() method which configures header text
+    word wrapping, and changed setHeaderAlignemnt() so that it now
+    allows to change both the horizontal and vertical alignment. This
+    replaces the previously interwoven API for both features using the
+    multiLine parameter in setHeaderHeight(), which has been
+    deprecated. The rendering of the header items has been
+    reimplemented, simplified, and cleaned up in the process, avoiding
+    rendering problems on IE browsers.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WApplication.html">WApplication</a>
+  </dt>
+  <dd>
+    Two new methods, deferRendering() and resumeRendering() can be
+    used to defer the rendering phase in response to the current
+    event-loop request. This is useful for situations where you are
+    waiting for an asynchronous operation to complete, but want to
+    handle this synchronously in the user-interface (i.e. blocking the
+    interface until the operation completes). While this is not a good
+    idea in general, it may be useful if you can guarantee that the
+    event will arrive within an acceptible time (e.g. 1 second). This
+    effectively stalls the response to the current request, but avoids
+    blocking threads in the process.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WDialog.html">WDialog</a>
+  </dt>
+  <dd>
+    Added setClosable(), which adds a close icon into the title bar.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WFormWidget.html">WFormWidget</a>
+  </dt>
+  <dd>
+    We have cleaned up the use of exceptions within Wt. We have
+    converted numerous cases where an exception used to be thrown to
+    error logging, if the exception was thrown to indicate an API
+    problem. When the API problem is not resulting in a corrupt state,
+    we now log the error instead of terminating the session. All other
+    cases now use an exception that implements WException. This does
+    not affect situations where a std::exception was advertised in the
+    API.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WLogger.html">WLogger</a>
+  </dt>
+  <dd>
+    <div>
+      We have reorganized the logging within Wt. Internally, a number
+      of macros are now used for logging, with as default
+      implementation our own (simple) logger, but which can be
+      redefined to use instead another logging framework of your
+      choice, as some have rightfully requested.
+    </div>
+    <div>
+      But we've also improved our logger so that it now can be
+      configured to filter only certain information, based on type and
+      scope. This is mostly useful for debuggin and development of Wt
+      itself, since it allows us to switch on debugging output, in a
+      fine-grained way, in a debug build.
+    </div>
+    <div>Finally, a new global function has been added (Wt::log()) which
+      selects an appropriate logger for logging and is more convenient
+      than WApplication::log() which required an application instance.
+    </div>
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WTemplate.html">WTemplate</a>
+  </dt>
+  <dd>
+    <div>Arguments to bound functions are now parsed and passed to
+      the resolveString() methods.</div>
+
+    <div>Two new constructs have been added: conditions and
+      functions. Conditions allow certain parts of a template to be
+      skipped or included based on a bound condition. Functions are
+      useful to automatically resolve certain variables, two built-in
+      functions are implemented: one to resolve strings in a message
+      resource bundle ("tr"), and another to resolve the id of a bound
+      widget ("id").
+    </div>
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1Dbo_1_1collection.html">Dbo::collection&lt;T&gt;</a>
+  </dt>
+  <dd>
+    We've added front() methods that return the first element.
+  </dd>
+
+  <dt>
+    Built-in httpd connector
+  </dt>
+  <dd>
+    We have expanded the WebSockets implementation to cover newer
+    versions of the WebSockets protocol (draft): next to 00, we now
+    also support 07, 08 and 13 protocols (with draft-17 semantics).
+  </dd>
+
+  <dt>
+    Configuration
+  </dt>
+  <dd>
+    On UNIX-like platforms, and using the built-in httpd connector,
+    SIGHUP is caught in the WServer::waitForShutdown() utility function,
+    and the configuration file (wt_config.xml) is reread.
+  </dd>
+
+  <dt>
+    Several security improvements
+  </dt>
+  <dd>
+    <dl>
+      <dt>DoS mitigation</dt>
+      <dd>We have added two measures to prevent DoS attacks that try
+	to exhaust the server by spawning sessions. This is in
+	particular a risk when deploying using the progressive bootstrap
+	method, since then a plain HTML session can be spawned with a
+	single request.
+	<ul>
+	  <li>Plain sessions may be limited to constitute only a
+	  fraction of the total number of sessions. This is configured
+	  using the &lt;plain-ajax-sessions-ratio-limit&gt;
+	  configuration option.</li>
+	  <li>Ajax sessions need to confirm their "intelligence" by
+	  solving a puzzle which requires them to properly parse the
+	  (ever-changing) JavaScript and HTML.</li>
+	</ul>
+      </dd>
+      <dt>Compromised session ID risk reduction</dt>
+      <dd>
+	A compromised session ID no longer can be used to hijack that
+	session.
+	<ul>
+	  <li>A full page refresh (using the session ID to rerender
+	    the current application state) is no longer allowed unless
+	    both client IP address and user-agent are unchanged. To
+	    still enable page refresh in this situation, you may
+	    configure the use of a cookie which can be used to confirm
+	    the original browser (although that cookie will not be
+	    used for session tracking), using the
+	    &lt;session-id-cookie&gt; setting.</li>
+	  <li>
+	    The session ID cannot be used to POST events to an Ajax
+	    session, since these require proof of other ever-changing
+	    context specific information, notably a pageId and ackId.
+	  </li>
+	</ul>
+      </dd>
+    </dl>
+  </dd>
+
+</dl>
+
+<h3>D) Non-backwards compatible changes</h3>
+
+<dl>
+  <dt>
+    Build options
+  </dt>
+  <dd>The HTTP_WITH_SSL option has been removed, and is now replaced
+    by WT_WITH_SSL -- OpenSSL is now a dependency of Wt inherited by
+    the httpd.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WValidator.html">WValidator</a>
+  </dt>
+  <dd>
+    We broke the validate() method, to return a new WValidator::Result
+    instead of WValidator::State. The main improvement is that the
+    validation may also return a text which contains information on
+    why validation failed. This makes the API consistent with the
+    client-side API, and obviously much more useful. It will break
+    existing application that call validate() or have reimplemented
+    validate() in a custom validation class.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1Test_1_1WTestEnvironment.html">WTestEnvironment</a>
+  </dt>
+  <dd>
+    This class has moved to a pseudo-connector library
+    (libwttest). This was needed to be able to use asynchronous I/O
+    (such as Http::Client) in test cases, which rely on a WIOService
+    fournished by a WServer instance.
+  </dd>
+</dl>
+
+<hr>
+
+<h2>Release 3.1.11 (September 23, 2011)</h2>
+
+<p>
+  This release
+  contains <a href="http://redmine.emweb.be/versions/show/12">many
+  bug fixes</a> and a few new features.
+</p>
+
+<h3>A) New classes:</h3>
+
+<dl>
+  <dt>
+    <a href="classWt_1_1WLink.html">WLink</a>
+  </dt>
+  <dd>
+    This class unifies the different link types used in Wt, in a
+    single value class. Depending on the context, a link may refer to
+    a URL, a resource, or an internal path. We've updated the API
+    throughout to replace the function overloads for these different
+    cases with a single usage of WLink, simplifying the API (but don't
+    worry, we left the old methods, albeit depricated).
+  </dd>
+  <dt>
+    <a href="classWt_1_1WMediaPlayer.html">WMediaPlayer</a>
+  </dt>
+  <dd>
+    A media player has been added which provides a unified framework
+    for playing audio and video, and which deals with cross-browser
+    issues (chosing a suitable implementation per browser). We've also
+    renamed WHTML5Audio, WHTML5Video, and WHTML5Media to WAudio,
+    WVideo and WAbstractMedia respectively (since well, everything
+    will eventually be HTML5, no ?).
+  </dd>
+</dl>
+
+<h3>B) Main improvements:</h3>
+
+<dl>
+  <dt>
+    <a href="classWt_1_1WResource.html">WResource</a>,
+    <a href="classWt_1_1Http_1_1ResponseContinuation.html">Http::ResponseContinuation</a>
+  </dt>
+  <dd>
+    Currently, you can already stream the output of a big resource in
+    little chunks, using a continuation to resume sending the next
+    part. We've now added API methods
+    (WResourceContinuation::waitForMoreData() and
+    WResource::haveMoreData()) to allow a resource to suspend its
+    response because it is currently lacking more data, to continue
+    later when new data is available (and without tying up a thread).
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WDialog.html">WDialog</a>
+  </dt>
+  <dd>
+    Added an option setResizable() which puts a resize handle in the
+    bottom right corner.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WPopupMenu.html">WPopupMenu</a>,
+    <a href="classWt_1_1WPopupMenuItem.html">WPopupMenuItem</a>
+  </dt>
+  <dd>
+    Added a triggered() signal, and an option to automatically cancel
+    the popup menu when the mouse leaves the menu (after a
+    delay). We've also added the possibility to link a popup menu item
+    with a WLink, and the option to make the item which has a submenu
+    item also itself selectable.
+  </dd>
+
+  <dt>
+    Dbo::Session
+  </dt>
+  <dd>
+    The load() method has an additional, optional parameter, to force
+    rereading the copy from the database.
+  </dd>
+
+  <dt>
+    Dbo::collection&lt;C&gt;
+  </dt>
+  <dd>
+    Added a count() method which uses a query to determine whether the
+    collection contains an element.
+  </dd>
+
+  <dt>
+    Test::WTestEnvironment
+  </dt>
+  <dd>
+    Added dialogExecuted() and popupExecuted() methods which allow to
+    interact with a reentrant eventloop from a test plan.
+  </dd>
+</dl>
+
+<h3>C) Non-backwards compatible changes</h3>
+
+The item data roles InternalPathRole and UrlRole have been removed,
+and replaced by a LinkRole (which contains a WLink value instead).
+
+<h3>D) Deprecated API</h3>
+
+With the introduction of WLink, the following API is being deprecated
+(although it can be argued that some of these may be kept for
+convenience):
+
+<ul>
+  <li>
+    WAbstractArea::setRef(): use WAbstractArea::setLink() instead.
+  </li>
+  <li>
+    WAbstractArea::ref(): use WAbstractArea::link() instead.
+  </li>
+  <li>
+    WAbstractArea::setResource(): use WAbstractArea::setLink() instead.
+  </li>
+  <li>
+    WAbstractArea::resource(): use WAbstractArea::link() instead.
+  </li>
+  <li>
+    WAnchor::setRef(): use WAnchor::setLink() instead.
+  </li>
+  <li>
+    WAnchor::ref(): use WAnchor::link() instead.
+  </li>
+  <li>
+    WAnchor::setResource(): use WAnchor::setLink() instead.
+  </li>
+  <li>
+    WAnchor::resource(): use WAnchor::link() instead.
+  </li>
+  <li>
+    WAnchor::setRefInternalPath(): use WAnchor::setLink() instead.
+  </li>
+  <li>
+    WImage::setImageRef(): use WImage::setImageLink() instead.
+  </li>
+  <li>
+    WImage::imageRef(): use WImage::imageLink() instead.
+  </li>
+  <li>
+    WImage::setResource(): use WImage::setLink() instead.
+  </li>
+  <li>
+    WImage::resource(): use WImage::link() instead.
+  </li>
+  <li>
+    WStandardItem::setInternalPath(): use WStandardItem::setLink() instead.
+  </li>
+  <li>
+    WStandardItem::internalPath(): use WStandardItem::link() instead.
+  </li>
+  <li>
+    WStandardItem::setUrl(): use WStandardItem::setLink() instead.
+  </li>
+  <li>
+    WStandardItem::url(): use WStandardItem::link() instead.
+  </li>
+</ul>
+
+The following classes have been renamed, and the old name is being
+deprecated:
+
+<ul>
+  <li>
+    WHTMLMedia is now WAbstractMedia.
+  </li>
+  <li>
+    WHTMLVideo is now WVideo
+  </li>
+  <li>
+    WHTMLAudio is now WAudio
+  </li>
+</ul>    
+
+<hr>
+
+<h2>Release 3.1.10 (July 8, 2011)</h2>
+
+<p>
+  This release contains a mix of new features and bug fixes 
+</p>
+
+<h3>A) New classes:</h3>
+
+<dl>
+  <dt>
+    <a href="classWt_1_1WAnimation.html">WAnimation</a>
+  </dt>
+  <dd>
+    We have added support for animations to show or hide widgets (used
+    in <a href="classWt_1_1WWidget.html#a66bdda41220267a8c7ff9865996e2675">WWidget::setHidden()</a>,
+    and <a href="classWt_1_1WStackedWidget.html">WStackedWidget</a>). These
+    animations will only be used when the browser supports CSS3
+    animations (at the moment of writing that includes latest Firefox,
+    Chrome and Safari releases).
+  </dd>
+  <dt>
+    <a href="classWt_1_1WStreamResource.html">WStreamResource</a>
+  </dt>
+  <dd>
+    Dmitriy Igrishin factored this out of the WFileResource since most
+    of its functionality (continuations, range support) could be
+    generalized to streaming from a std::istream.
+  </dd>
+</dl>
+
+<h3>B) Main improvements:</h3>
+
+<dl>
+  <dt>
+    Allowing multiple WServer instances.
+  </dt>
+  <dd>
+    Apparently for no good reasons at all, some singletons were still
+    around which prevented you from instantiating
+    multiple <a href="classWt_1_1WServer">application servers</a>. Now
+    you can (but only using the built-in httpd) instantiate multiple
+    servers side by side in the same process, which may server the
+    same or different web applications over different ports. A feature
+    example (<tt>multiple_servers</tt>) shows how that works.
+  </dd>
+
+  <dt>
+    Internal path encoding in WTemplate and WText</a>
+  </dt>
+  <dd>
+    <div>
+      The
+      new <a href="classWt_1_1WTemplate.html#aeee888e560c519ac0e33bfc1ebb315e2">setInternalPathEncoding()</a>
+      method will, if needed, enable reencoding of &lt;a&gt; anchors
+      which reference internal paths consistent with how in the
+      current session internal paths need to be dealt with (which
+      depends on whether the browser supports Ajax and HTML5 History).
+    </div>
+    <div>
+      Since this requires an additional XML parsing step (but the
+      rapidxml parser that is used is ... rapid !), it is off by
+      default.
+    </div>
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WWApplication.html">WApplication::findWidget()</a>
+  </dt>
+  <dd>
+    Like WWidget::findWidget(), but on the whole application,
+    including widgets outside the WApplication::root().
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WWApplication.html">WApplication::changeSessionId()</a>
+  </dt>
+  <dd>
+    Generates a new session ID for the application. This is useful to prevent
+    session fixation attacks by changing the session ID when a user has
+    authenticated successfully.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WResource.html">WResource::setDispositionType()</a>
+  </dt>
+  <dd>
+    This method allows to specify how the browser should preferably
+    show a (non-HTML) resource.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WTable.html">WTable</a>
+  </dt>
+  <dd>
+    Methods were added
+    to <a href="classWt_1_1WTable.html#a239d85781509ff321eb964af042bcf57">move
+    a row</a>
+    or <a href="classWt_1_1WTable.html#a0670b90a05a6c0176c773bf8766a5bf2">a
+    column</a>. In addition we added methods
+    to <a href="classWt_1_1WTableRow.html">WTableRow</a>
+    and <a href="classWt_1_1WTableColumn.html">WTableColumn</a> for
+    accessing cells in the given row or column.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WTextEdit.html">WTextEdit</a>
+  </dt>
+  <dd>
+    Various improvements to allow more flexible access to TinyMCE
+    settings on a per-instance basis.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WWidget.html">WWidget::setToolTip()</a>
+  </dt>
+  <dd>
+    An additional argument was added which may specify the use of
+    XHTML tooltips, which are implemented using a &lt;div&gt;.
+  </dd>
+
+  <dt>
+    Dbo::collection&lt;T&gt;
+  </dt>
+  <dd>
+    Make insert() and erase() also work for a collection involved in a
+    1-N relation
+  </dd>
+
+  <dt>
+    Dbo::ptr&lt;C&gt;
+  </dt>
+  <dd>
+    Improved modify() behaviour returns a proxy object which marks the
+    the object dirty also from its destructor, avoiding situations where
+    the transaction is flushed during a modification and remainig changes
+    are forgotten.
+  </dd>
+
+  <dt>
+    Dbo::Dbo&lt;C&gt;
+  </dt>
+  <dd>
+    Added setDirty() and self() methods.
+  </dd>
+
+  <dt>
+    Dbo::backend::Sqlite3
+  </dt>
+  <dd>
+    The packaged sqlite3 version was bumped from 3.6.20 to 3.7.6
+  </dd>
+
+</dl>
+
+<h3>C) Non-backwwards compatible changes</h3>
+
+<dl>
+  <dt>The signature of the virtual method WWidget::setHidden() has changed.</dt>
+  <dd>
+    Probably the biggest breaking change since long, this was needed
+    to add support for animations. This will break existing code which
+    specializes the WWidget::setHidden() method. This code should be
+    updated to pass the WAnimation object.
+  </dd>
+</dl>
+
+<hr>
+
+<h2>Release 3.1.9 (April 7, 2011)</h2>
+
+<p>
+  This release contains mostly bug fixes and quality improvements.
+</p>
+
+<h3>A) New classes:</h3>
+
+<dl>
+  <dt>
+    <a href="classWt_1_1WAbstractSpinBox.html">WAbstractSpinBox</a>,
+    <a href="classWt_1_1WDoubleSpinBox.html">WDoubleSpinBox</a>
+  </dt>
+  <dd>
+    Refactored and reimplemented the spinbox control into an integer
+    and floating point version, which may be implemented either using
+    a native HTML5 element or a portable Wt implementation.
+  </dd>
+
+</dl>
+
+<h3>B) Main new features in existing classes:</h3>
+
+<dl>
+  <dt>
+    Internal path handling: HTML5 History API
+  </dt>
+  <dd>
+    <div>
+      When the browser supports the HTML5 History API, URLs are now the
+      same for plain HTML and Ajax-enabled session (i.e. without the '#'
+      trick). This can improve load time and improves the
+      user-experience.
+    </div>
+
+    <div>
+      To avoid problems of resolving resources with relative URLs, a
+      new property 'baseURL' can be used (that can be configured in
+      wt_config.xml), which allows all relative URLs be resolved from
+      the same location.
+    </div>
+  </dd>
+
+  <dt>
+    Internal path handling: no ugly internal paths ('?_=/path')
+  </dt>
+  <dd>
+    The configuration option (--docroot) for the built-in
+    httpd allows to specify folders with static paths and when doing
+    so, all other requests are forwarded to the application, which in
+    turn does no longer need to rely on the ugly '?_=' query parameter
+    to encode its internal paths.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WPdfImage.html">WPdfImage</a>, <a href="classWt_1_1WRasterImage.html">WRasterImage</a>
+  </dt>
+  <dd>
+    Improved font support: the library can be optionally built to use
+    libpango for resolving characters to glyphs. This allows text to
+    be rendered using a mix of different fonts that all provide only
+    partial coverage for the entire unicode range. Note that for
+    WPdfImage, this currently requires use of a libharu fork
+    (https://github.com/kdeforche/libharu/tree/)
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WAbstractItemView.html">WAbstractItemView</a>,
+    WTableView and WTreeView
+  </dt>
+  <dd>
+    Implementation of setRowHeaderCount() which fixes the number of
+    columns that are used as row headers and remain fixed while
+    scrolling horiziontally through the table. This replaces the now
+    deprecated setColumn1Fixed() API.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WRasterImage.html">WRasterImage</a>
+  </dt>
+  <dd>
+    Several quality improvements: correct rendering of alpha
+    compositing, text rendering by libpango, 
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WSlider.html">WSlider</a>
+  </dt>
+  <dd>
+    The slider has been reimplemented to allow for using either the
+    native HTML5 slider control, or the Wt implementation. The Wt
+    implementation can now also be styled through CSS.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WServer.html#abca6890dab44d87bd3af64705ac072d3">WRun()</a>,
+    <a href="classWt_1_1WServer.html#a84f84652ccb139850adcf5ea75f50fa5">WServer::addEntryPoint()</a>
+  </dt>
+  <dd>
+    The callback function is now a boost::function<> object, allowing
+    you to bind other variables into the callback function.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WServer.html#a2894484a9661d728dc9aa60ba79bb570">WServer::post()</a>
+  </dt>
+  <dd>
+    A safe method to post events to a session, and a useful
+    alternative to WApplication::UpdateLock. The simplechat and
+    codeview examples were converted to illustrate this method rather
+    than the (dead-lock prone) WApplication::UpdateLock approach.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WString.html#abcff7d3d30972762bd5d9279dc903a36">WString::trn()</a>
+  </dt>
+  <dd>
+    Implementation of plural string resolution, with locale-dependent
+    rules. The implementation provided
+    by <a href="classWt_1_1WMessageResourceBundle.html">WMessageResourceBundle</a>
+    allows the same kind of expressions as GNU ngettext().
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1Chart_1_1WAxis.html#ab36cb584a0aa8bdcc1c3212a9304e6cd">Chart::WAxis::setResolution()</a>
+  </dt>
+  <dd>
+    Allows to specify the minimum chart axis resolution (contributed by Gaetano Mendola).
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1Dbo_1_1Transaction.html">Dbo::Transaction</a>
+  </dt>
+  <dd>
+    Fixed an issue with internal inconsistencies after transaction rollback.
+  </dd>
+
+</dl>
+
+<h3>C) Non-backwwards compatible changes</h3>
+
+<dl>
+  <dt>Changed i18n keys for <tt>Wt.WDate.Mon-Sun</tt>
+  and <tt>Wt.Date.Jan-Dec</tt></dt>
+  <dd>
+    We were pointed out the fact that the built-in i18n keys for WDate
+    month names had a collision for the month 'May', which had the
+    same key for the abbreviated 3-letter variant as the full length
+    variant. Therefore in this release we reformatted the abbreviated
+    3-letter variant keys to <tt>Wt.WDate.3.Mon-Sun</tt>
+    and <tt>Wt.WDate.3.Jan-Dec</tt>. You will need to update your own
+    languages copies of these (or better, contribute them and we'll
+    maintain them for you!).
+  </dd>
+</dl>
+
+<h3>D) Android and iPad/iPhone targets</h3>
+
+<p>This release contains initial work on supporting Android and
+iPad/iPhone as targets for deploying Wt applications within a webkit
+view widget.</p>
+
+<p>For iPad/iPhone, we added a script that builds Wt as an OSX Framework
+which may be used in XCode to build iOS applications.</p>
+
+<p>For Android, we added support for building the library and examples as
+shared objects which are packaged together with a small Java project
+which instantiates a WebView, into standalone APK files.</p>
+
+<p>This is ongoing work. We need to improve support in Wt for Mobile
+Webkit to make the applications look and behave more as native
+applications on these devices.</p>
+
+<hr>
+
+<h2>Release 3.1.8 (Feb 4, 2011)</h2>
+
+<p>
+  This release contains mostly bug fixes, quality improvements,
+  and a few new features.
+</p>
+
+<h3>A) New classes:</h3>
+
+<dl>
+  <dt><a href="classWt_1_1WFontMetrics.html">WFontMetrics</a></dt>
+  <dd>
+    A font metrics class. Font metrics are only available for
+    WPdfImage, and an implementation is planned for WRasterImage.
+  </dd>
+  <dt><a href="classWt_1_1Render_1_1WTextRenderer.html">Render::WTextRenderer</a>, 
+  <a href="classWt_1_1Render_1_1WPdfRenderer.html">Render::WPdfRenderer</a></dt>
+  <dd>
+    A renderer class for a subset of XHTML, useful for e.g.~generating
+    PDF reports.
+  </dd>
+
+</dl>
+
+<h3>B) Main new features in existing classes:</h3>
+
+<dl>
+  <dt>
+    <a href="classWt_1_1WAbstractItemView.html#ad11215811b4de66f3d3c4267b694fe38">WAbstractItemView::setHeaderItemDelegate()</a>
+  </dt>
+  <dd>
+    Rendering of header cells is now also delegated and can be customized.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WAbstractItemView.html#a027a8ad4967a0e269bdabbffca15f489">WAbstractItemView::scrollTo()</a>
+  </dt>
+  <dd>
+    Scroll to a particular item.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WApplication.html#a44c5f0398b5539269be3961b26e95b08">WApplication::setLayoutDirection()</a>
+  </dt>
+  <dd>
+    Added support for Right-To-Left (mirrored) layouts, typically used
+    with some middle-Eastern languages. In addition to HTML's built-in
+    support for RTL directionality, layout managers, tables and MVC
+    tree/table views render their columns in the opposite order.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WBoxLayout.html">WBoxLayout, WGridLayout, WBorderLayout</a>
+  </dt>
+  <dd>
+    Empty layout items do longer create padding, and thus padding
+    collapses around empty items (both horizontally and vertically).
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WEvent.html">WEvent::eventType()</a>
+  </dt>
+  <dd>
+    Information on the event type may be used during WApplication::notify()
+    for e.g. detecting user activity.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WGoogleMap.html">WGoogleMap</a>
+  </dt>
+  <dd>
+    Added support for Google API version 3, alongside version 2.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WPdfImage.html">WPdfImage</a>
+  </dt>
+  <dd>
+    Added support true type font loading, a UTF8 patch for libharu is
+    pending to enable full unicode support text rendering.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1WWidget.html#afc4bfcc92fa39010cac8775f3332dfa5">WWidget::setWidth()</a>,
+    <a href="classWt_1_1WWidget.html#a7d82ee32496743fdd28b30461f95d5ec">WWidget::setHeight()</a>
+  </dt>
+  <dd>
+    Convenience methods for resize() for only width or height.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1Chart_1_1WCartesianChart.html">Chart::WCartesianChart</a>
+  </dt>
+  <dd>
+    A number of methods to customize the location and look of the legend.
+  </dd>
+
+  <dt>
+    <a href="classWt_1_1Chart_1_1WDataSeries.html#a9361e12e94699f59090ae8ac3a4921df">Chart::WDataSeries::setXSeriesColumn()</a>
+  </dt>
+  <dd>
+    Allow use of a specific X series for each data series in scatter plots.
+  </dd>
+
+  <dt>
+    <a href="group__dbo.html#ga0f2f0c37d44f27e151b8f12412240731">Dbo::belongsTo()</a>, <a href="group__dbo.html#ga0d0cbc70dcfebc659ea1662e9327c90c">Dbo::hasMany()</a>
+  </dt>
+  <dd>
+    Support for foreign key constraints (NotNull, OnDeleteCascade, etc...).
+  </dd>
+
+  <dt>
+    <a href="group__dbo.html#ga0f2f0c37d44f27e151b8f12412240731">Dbo::Session::rereadAll()</a>
+  </dt>
+  <dd>
+    Can be optionally given a single table name to reread (discard) all object
+    data from a single class/table.
+  </dd>
+
+  <dt>
+    <a href="structWt_1_1Dbo_1_1sql__value__traits.html">Dbo::sql_value_traits&lt;bool&gt;, Dbo::sql_value_traits&lt;long&gt;</a>
+  </dt>
+  <dd>
+    Added mappings for C++ <tt>bool</tt> and <tt>long</tt> types.
+  </dd>
+
+</dl>
+
+<h3>C) API and other changes:</h3>
+
+<dl>
+  <dt>
+    CORS (Cross-Origin Resource Sharing)
+  </dt>
+  <dd>
+    A communication method between browser and server is now chosen
+    based on the needs (same origin or cross-origin), and based on
+    browser support. Cross-Origin requests are now supported for both
+    Ajax and WebSockets, and are are chosen if available and needed,
+    reverting to dynamic script-tags otherwise.<br/>
+
+    The WApplication::setAjaxMethod() has no effect anymore, and has
+    been deprecated.
+  </dd>
+
+  <dt>
+    Bootstrap process has changed.
+  </dt>
+  <dd>
+    While tracking bootstrapping problems on IE8 (resulting in a blank
+    page instead of a shiny app), we not only found a good workaround
+    for that, but also found a way to implement the default bootstrap
+    mode so that the stylesheets are applied before the application is
+    rendered. This solves the annoying flicker you experienced with
+    the default bootstrap mode, and also allows us to remove a number
+    of workarounds for IE. As a result of various cleanups, more CSS
+    stylesheet rules have been pushed out to the external wt.css
+    (theme) stylesheet. If you've created your own theme, you will
+    need to take note.
+  </dd>
+
+  <dt>
+    <a href="group__painting.html#gaf67a889bc5e9f8ab3a59fe58b0fa2128">Wt::BrushStyle</a>
+  </dt>
+  <dd>
+     Wt::WBrushstyle has been renamed to Wt::BrushStyle. This makes it
+     consistent with the naming conventions of other enums. Sorry, our
+     mistake !
+  </dd>
+</dl>
+
+<hr />
+
+<h2>Release 3.1.7 (Nov 26, 2010)</h2>
+
+<p>
+  This release contains mostly bug fixes, quality improvements,
+  and a few new features.
+</p>
+
+<p>
+  Note: the package was updated (3.1.7a) on Nov 30 to fix a layouting
+  regression.
+</p>
+
+<h3>A) New classes:</h3>
+
+<dl>
+  <dt><a href="classWt_1_1WGLWidget.html">WGLWidget</a></dt>
+  <dd>
+    A preview of WebGL support in Wt (work in progress).
+  </dd>
+</dl>
+
+<h3>B) Main new features in existing classes:</h3>
+
+<dl>
+  <dt>
+    <a href="classWt_1_1WAbstractItemView.html#a120156dc59eaf3608916b679d937c5b8">WAbstractItemView</a>
+  </dt>
+  <dd>Added API for hiding columns.</dd>
+  <dt>
+    <a
+  href="classWt_1_1Chart_1_1WCartesianChart.html">WCartesianChart</a>,
+    <a
+  href="classWt_1_1Chart_1_1WCartesianChart.html">WPieChart</a>
+  </dt>
+  <dd>
+    Added support for ToolTipRole data, using WAbstractArea interactive areas.
+  </dd>
+  <dt>
+    <a href="classWt_1_1Dbo_1_1Session.html#ad59da4e078a4e6532da698425193bbdb">Dbo::Session::rereadAll()</a>
+  </dt>
+  <dd>
+    Reread all transient objects, as a catch-all solution to stale
+    data (data modified in another session).
+  </dd>
+  <dt>
+    <a href="classWt_1_1WInteractWidget.html#ac7d10a6cae1e23a791b44c0682a3c627">WInteractWidget</a>
+  </dt>
+  <dd>Added support for touch and gesture events (Mobile webkit).</dd>
+</dl>
+
+<h3>C) Misc:</h3>
+
+<dl>
+  <dt>
+    WebSocket protocol support (experimental)
+  </dt>
+  <dd>Use of WebSocket for communication between browser and server
+    can now be used, by enabling &lt;web-sockets&gt; in the
+    configuration file (we're likely to turn this on by default in a
+    future version. There is automatic fallback to the current
+    XMLHttpRequest based communication if WebSockets are not available
+    or communication could not be established. WebSockets is only
+    available using the built-in httpd server (which is now also a
+    WebSocket server).</dd>
+  <dt>
+    Build improvements
+  </dt>
+  <dd>
+    <ul>
+      <li>Provide a workaround for broken g++ compiler shipped in Ubuntu
+      Maverick</li>
+      <li>Provide support for building without using 
+      std::wstring (-DWT_NO_STD_WSTRING) or std::locale
+      (-DWT_NO_STD_LOCALE=OFF) support.
+      </li>
+    </ul>
+  </dd>
+</dl>
+
+<hr />
+
+<h2>Release 3.1.6 (Oct 29, 2010)</h2>
+
+<p>
+  This release contains a healthy mix of bug fixes, quality improvements,
+  and new features. And hopefully no regressions :-)
+</p>
+
+<h3>A) New classes:</h3>
+
+<dl>
+  <dt><a href="classWt_1_1SyncLock.html">SyncLock&lt;Lock&gt;</a></dt>
+  <dd>
+    A dead-lock avoidance adaptor for a Boost mutex lock, which provides
+    a controlled way of releasing the current application lock.
+  </dd>
+  <dt><a href="classWt_1_1WProgressBar.html">WProgressBar</a></dt>
+  <dd>
+    A progress bar, contributed by Thomas Suckow.
+  </dd>
+  <dt><a href="classWt_1_1WSpinBox.html">WSpinBox</a></dt>
+  <dd>
+    A spin box.
+  </dd>
+  <dt><a href="structWt_1_1boost__any__traits.html">boost_any_traits&lt;Type&gt;</a></dt>
+  <dd>
+    A traits class for customized interpretation of data stored in a
+    boost::any. You can register a new type using <a href="group__modelview.html#ga91842a84102ee15d41102ccf0745f4e4">registerType&lt;Type&gt;</a>.
+  </dd>
+
+</dl>
+
+<h3>B) Main new features in existing classes:</h3>
+
+<dl>
+  <dt>
+    Native support for MSIE 9
+  </dt>
+  <dd>
+    MSIE 9 (Beta) is now supported in all its goodness, including support
+    for HTML5 canvas and (almost working) support for SVG.
+  </dd>
+  <dt>
+    <a href="classWt_1_1WApplication_1_1UpdateLock.html">
+      WApplication::UpdateLock</a>
+  </dt>
+  <dd>The lock is now a RIAA lock, getUpdateLock() has been deprecated.
+    The lock needs also to be tested against validity (using operator bool()):
+    when invalid the session that it is trying to lock is being destroyed.</dd>
+  <dt>
+    <a href="classWt_1_1WApplication.html#a506978cfb884af4bc6ffd5a5bc8476d6">WApplication::setConfirmCloseMessage()</a>
+  </dt>
+  <dd>Provide the user with a message to confirm navigating away from the
+    application.</dd>
+  <dt>
+    <a href="classWt_1_1WApplication.html#a9a4048e01b69a536e35f47eb2a59a69b">WApplication::unload()</a>
+  </dt>
+  <dd>Rather then waiting for the session to expire, an application
+    that is navigated away iis now notified of this and will by
+    default <tt>quit()</tt>.</dd>
+  <dt>
+    <a href="classWt_1_1WApplication.html#a149412d829d104621c445bc10604be53">WApplication::addMetaHeader()</a>
+  </dt>
+  <dd>Can now be used to specify "http-equiv" meta headers too.</dd>
+  <dt>
+    <a href="classWt_1_1WDatePicker.html#acda30d9035692895a2bb94090babc073">WDatePicker::changed()</a>
+  </dt>
+  <dd>I wonder how we ever did without.
+  </dd>
+  <dt><a href="classWt_1_1WAbstractArea.html#a3dbe39c26769a63e4bf63020e31e9f22">WAbstractArea::mouseWheel()</a>,
+  <a href="classWt_1_1WInteractWidget.html#a656a0e4d5af72af0190d84dedf0093c6">WInteractWidget::mouseWheel()</a>,
+  <a href="classWt_1_1WMouseEvent.html#a4354738e0bce7e57764a465f5e19895d">WMouseEvent::wheelDelta()</a></dt>
+  <dd>
+    Added mouseWheel() event.
+  </dd>
+
+  <dt><a href="classWt_1_1WFileUpload.html">WFileUpload</a></dt>
+  <dd>
+    Added support for the simultaneous upload of multiple files (HTML5
+    "multiple") attribute and showing a progress bar to show upload
+    progress.
+  </dd>
+
+  <dt><a href="classWt_1_1WFormWidget.html">WFormWidget::hasFocus()</a></dt>
+  <dd>
+    Returns whether the widget currently has the keyboard focus.
+  </dd>
+
+  <dt><a href="classWt_1_1WHTML5Media.html">WHTML5Media</a></dt>
+  <dd>
+    Added events to catch play, pause, play-back progress and volume
+    changes.
+  </dd>
+
+  <dt><a href="classWt_1_1WLineEdit.html">WLineEdit</a>, <a href="classWt_1_1WTextArea.html">WTextArea</a></dt>
+  <dd>
+    Added <tt>currentPosition()</tt>, <tt>selectionStart()</tt>,
+    <tt>selectedText()</tt>, and <tt>hasSelectedText()</tt> methods to retrieve
+    the current cursor position and selection.
+  </dd>
+
+  <dt><a href="classWt_1_1WPushButton.html#aa5830a2118836423f0c16d12bbfd57a0">WPushButton::setRef()</a></dt>
+  <dd>
+    Utility method to create an anchor that looks like a button, or a
+    button that behaves like an anchor, depending on your point of
+    view. There is also <tt>setResource()</tt> to set a resource as
+    target.
+  </dd>
+  <dt>
+    <a href="classWt_1_1WResource.html">WResource</a>
+  </dt>
+  <dd>Added API for upload progress tracking.</dd>
+
+  <dt>
+    <a href="classWt_1_1Http_1_1Request.html">Http::Request</a>
+  </dt>
+  <dd>Added support for HTTP request byte ranges, and this is now
+  interpreted by both the WFileResource and built-in httpd for static
+  files.
+  </dd>
+  <dt>
+    <a href="classWt_1_1Http_1_1Response.html">Http::Response</a>
+  </dt>
+  <dd>Added <tt>setContentLength()</tt> which allows you to specify the
+    lenght of the response in advance, proving a better user experience
+    for large downloads.
+  </dd>
+  <dt>
+    <a href="classWt_1_1Dbo_1_1Session.html#8712ff0d59f7bb6a4d2986ad9637cc9e">Dbo::Session::query()</a>
+  </dt>
+  <dd>Switched to a more complete Boost.Spirit parser for SQL queries, which
+    understands most of the SQL syntax, including functions,
+    "with ... select ... ".
+  </dd>
+  <dt>
+    <a href="classWt_1_1Dbo_1_1QueryModel.html">Dbo::QueryModel</a>
+  </dt>
+  <dd>Added support for custom column header names and changing the
+    undelrying query using setQuery() while preserving the current
+    column definitions.</dd>
+  <dt>
+    <a href="classWt_1_1Dbo_1_1SqlStatement.html">Dbo::SqlStatement</a>
+  </dt>
+  <dd>Added boost::posix_time::time_duration type support.</dd>
+  <dt>
+    <a href="structWt_1_1Dbo_1_1sql__value__traits.html">Dbo::sql_value_traits&lt;WTime&gt;</a>
+  </dt>
+  <dd>Added template specialization for WTime.</dd>
+</dl>
+
+<hr />
+
+<h2>Release 3.1.5 (Sep 10, 2010)</h2>
+
+<p>
+  This release contains mostly bug fixes.
+</p>
+
+<h3>A) Main Changes</h3>
+
+<dl>
+  <dt><a href="classWt_1_1WGridLayout.html">WGridLayout</a>,
+    <a href="classWt_1_1WBoxLayout.html">WBoxLayout</a></dt>
+  <dd>Optimized client-side rendering performance. Previously, every layout
+    manager used would automatically slowdown every event because it would try
+    to relayout each time. This is no longer the case.</dd>
+  <dt><a href="classWt_1_1WSocketNotifier.html">WSocketNotifier</a></dt>
+  <dd>The socket notifier has been resurrected (it was in an perpetual state
+    of brokeness) and now works reliably across targets.</dd>
+</dl>
+
+<h3>B) Changes that may break existing applications:</h3>
+
+<h4>1) Built-in resource bundles</h4>
+
+Starting with this version, Wt uses an internal message resource
+bundle for the few strings it provides by itself (like for example
+'Ok' for the ok button in a WMessageBox, or the days-of-week in WDate).
+
+Previously, an ugly API was used in <a href="classWt_1_1WMessageBox.html">WMessageBox</a>,
+<a href="classWt_1_1WCalendar.html">WCalendar</a>,
+and <a href="classWt_1_1WDatePicker.html">WDatePicker</a>
+using a boolean 'i18n' parameter in the constructor. All this has now been removed,
+and instead the keys for these built-in strings have been documented. If you were
+using these classes your application will no longer build, you can simply remove the
+internationalization parameter and you will need to fix the keys you used for the
+messages according to the documentation.
+
+Any localized strings you use will take precedence over these built-ins.
+
+All affected classes (only those listed above actually have changed API and behaviour) are:
+<dl>
+  <dt><a href="classWt_1_1WAbstractItemView.html">WAbstractItemView</a></dt>
+  <dd>the paging tool bar buttons for graceful callback.</dd>
+  <dt><a href="classWt_1_1WCalendar.html">WCalendar</a></dt>
+  <dd>because of WDate</dd>
+  <dt><a href="classWt_1_1WDate.html">WDate</a> and <a href="classWt_1_1WDateTime.html">WDateTime</a></dt>
+  <dd>week days, month names</dd>
+  <dt><a href="classWt_1_1WDatePicker.html">WDatePicker</a></dt>
+  <dd>because of WCalendar and for the close button</dd>
+  <dt><a href="classWt_1_1WDefaultLoadingIndicator.html">WDefaultLoadingIndicator</a></dt>
+  <dd>loading text</dd>
+  <dt><a href="classWt_1_1WInPlaceEdit.html">WInPlaceEdit</a></dt>
+  <dd>save and cancel button text</dd>
+  <dt><a href="classWt_1_1WMessageBox.html">WMessageBox</a></dt>
+  <dd>standard buttons</dd>
+  <dt><a href="classWt_1_1WOverlayLoadingIndicator.html">WLoadingIndicator</a></dt>
+  <dd>standard buttons</dd>
+  <dt><a href="classWt_1_1WValidator.html">Validators</a></dt>
+  <dd>for the messages they display in case of error</dd>
+</dl>
+
+<h4>2) Other behavioural changes</h4>
+
+<dl>
+  <dt><a href="structWt_1_1WDialog.html">WDialog</a></dt>
+  <dd>Escape will no longer result in the dialog being rejected. You can
+    enable this behaviour using the rejectWhenEscaped() method.
+  </dd>
+</dl>
+
+<hr />
+
+<h2>Release 3.1.4 (Aug 13, 2010)</h2>
+
+<p>
+  This release contains several new features, but also a few changes
+  that break backwards compatibility (but are unlikely to affect an
+  average application).
+</p>
+
+<h3>A) New classes:</h3>
+
+<dl>
+  <dt><a href="classWt_1_1WBatchEditProxyModel.html">
+      WBatchEditProxyModel</a></dt>
+  <dd>A proxy model that caches editing operations to commit them atomically.
+  </dd>
+  <dt><a href="classWt_1_1WHTML5Audio.html">WHTML5Audio</a></dt>
+  <dd>Audio support using the HTML5 audio tag.</dd>
+  <dt><a href="classWt_1_1WPdfImage.html">WPdfImage</a></dt>
+  <dd>A WPaintDevice that writes to Pdf (using libharu).</dd>
+  <dt><a href="classWt_1_1WRasterImage.html">WRasterImage</a></dt>
+  <dd>A WPaintDevice that writes to a Png/Gif (using GraphicsMagick).</dd>
+  <dt>ISAPI connector</dt>
+  <dd>(Windows only) a connector that implements the Microsoft ISAPI
+    API, to integrate directly into Microsoft IIS. On Windows, this is
+    an alternative deployment option next to the built-in httpd.</dd>
+</dl>
+
+<h3>B) Main new features in existing classes:</h3>
+
+<dl>
+  <dt>
+    <a href="classWt_1_1WAbstractItemView.html">WAbstractItemView</a>
+  </dt>
+  <dd>Added support for validators while editing.</dd>
+  <dt>
+    <a href="classWt_1_1WApplication.html#88b082dadadd3fb7dbe10887e7d89c91">WApplication</a>
+  </dt>
+  <dd>Added an appRoot() method this returns the value of the
+    special property "approot" which can in some cases be defined
+    implicitly by a connector (such as ISAPI), and which allows an
+    application to reference working files whereas previously it was
+    assumed that they were in the working directory (CWD).</dd>
+  <dt>
+    <a href="classWt_1_1WEnvironment.html#fd8726dfa8cabcb49895df4a6112ef48">WEnvironment::agent() and related</a>
+  </dt>
+  <dd>Convenience methods that return pre-parsed user agent identification,
+    should you want to differentiate based on browser.</dd>
+  <dt>
+    <a href="classWt_1_1WWidget.html#bb5949e98f47edb7db98d7b6df07a31c">WWidget::addStyleClass()</a>, <a href="classWt_1_1WWidget.html#3b8a35e37ef06c408f346c63a5f1aa8e">WWidget::removeStyleClass()</a>
+  </dt>
+  <dd>Added addStyleClass() and removeStyleClass() methods.</dd>
+  <dt>
+    <a href="classWt_1_1WMenu.html">WMenu, WMenuItem</a>
+  </dt>
+  <dd>Added support for closable and disabled items (not complete,
+    CSS is lacking for polished theme). Contributed by Dmitriy Igrishin.</dd>
+  <dt>
+    <a href="classWt_1_1WModelIndex.html#93c11e136a0fdc596eb745cc7fce7033">WModelIndex</a>
+  </dt>
+  <dd>Added support for in-place (destructive) encoding to and
+  decoding from a raw index, making this less of a hassle for View
+  classes.</dd>
+  <dt>
+    <a href="classWt_1_1WSortFilterProxyModel.html">WSortFilterProxyModel</a>
+  </dt>
+  <dd>Added support for row insertion/removal.</dd>
+  <dt>
+    <a href="classWt_1_1WSuggestionPopup.html">WSuggestionPopup</a>
+  </dt>
+  <dd>Allow usage as an advanced combo-box, with an explicit drop down
+  button and ability to react to a selection.</dd>
+  <dt>
+    <a href="group__dbo.html#gc98c1f90b00ed9ce243c6412da3ac489">Dbo::id()</a>
+  </dt>
+  <dd>Support for natural keys (possibly of composite type) next to the
+    built-in surrogate keys.</dd>
+  <dt>
+    <a href="structWt_1_1Dbo_1_1dbo__traits.html">Dbo::dbo_traits&lt;C&gt;</a>
+  </dt>
+  <dd>By specializing this traits class, you can modify the surrogate id
+    field name (or disable it), and the optimistic version lock field
+    name (or disable it).</dd>
+  <dt>
+    <a href="classWt_1_1Dbo_1_1Session.html#8712ff0d59f7bb6a4d2986ad9637cc9e">Dbo::Session::query()</a>
+  </dt>
+  <dd>More robust query parsing (of the 'select' part), including
+  support for "select distinct".</dd>
+  <dt>
+    <a href="classWt_1_1Dbo_1_1QueryModel.html">Dbo::QueryModel</a>
+  </dt>
+  <dd>Added editing support (editing the model will modify the queried
+  dbo's).</dd>
+  <dt>
+    <a href="structWt_1_1Dbo_1_1query__result__traits.html">Dbo::query_result_traits&lt;C&gt;</a>
+  </dt>
+  <dd>Added setValue(), create(), add() and remove() methods for modifying
+    queried results.</dd>
+</dl>
+
+<h3>C) Changes that break existing applications:</h3>
+
+<dl>
+  <dt><a href="structWt_1_1Dbo_1_1Dbo.html">Dbo::Dbo</a></dt>
+  <dd>
+    This class is now a templated with the class name itself, in
+    order to provide the proper type for the (natural or surrogate) id
+    field for id(). You will need to replace
+    <pre>
+      class User : public Wt::Dbo { ... }
+    </pre>
+    with
+    <pre>
+      class User : public Wt::Dbo&lt;User&gt; { ... }
+    </pre>
+  </dd>
+  <dt>CSS</dt>
+  <dd>The toplevel container used by Wt is now given a <tt>position:
+    relative</tt> style; this was needed to be able to position widgets
+    (such as popups) using <tt>position: absolute</tt>, but may break
+    application layouts. You can override this CSS style by adding
+    <tt>.Wt-domRoot { position: static; }</tt> to your application's
+    (internal or external) stylesheet.
+  </dd>
+</dl>
+
+<hr />
+
+<h2>Release 3.1.3 (May 20, 2010)</h2>
+
+<p>
+  This release several new features, but also a few changes that
+  break backwards compatibility (but are unlikely to affect an average
+  application).
+</p>
+
+<h3>A) New classes:</h3>
+
+<dl>
+  <dt><a href="classWt_1_1SignalBase.html">SignalBase</a>,
+    <a href="classWt_1_1EventSignalBase.html">EventSignalBase</a></dt>
+  <dd>Abstract base classes for signals (these are not actually new,
+    but they were not yet part of the API).</dd>
+  <dt><a href="classWt_1_1WHTML5Video.html">WHTML5Video</a></dt>
+  <dd>Video support using the HTML5 video tag (work-in-progress).</dd>
+  <dt><a href="classWt_1_1Dbo_1_1Call.html">Dbo::Call</a></dt>
+  <dd>Class for executing a database call.</dd>
+  <dt><a href="classWt_1_1Dbo_1_1SqlConnectionPool.html">
+      Dbo::SqlConnectionPool</a>,
+    <a href="classWt_1_1Dbo_1_1FixedSqlConnectionPool.html">
+      Dbo::FixedSqlConnectionPool</a></dt>
+  <dd>Connection pool interface and implementation.</dd>
+  <dt><a href="classWt_1_1Dbo_1_1QueryModel.html">Dbo::QueryModel</a></dt>
+  <dd>An tabular item model for query results.</dd>
+</dl>
+
+<h3>B) Main new features in existing classes:</h3>
+
+<dl>
+  <dt><a href="classWt_1_1WAbstractItemDelegate.html">WAbstractItemDelegate</a></dt>
+  <dd>Added methods for editing: editState(), setEditState(),
+    setModelData() and closeEditor().</dd>
+  <dt><a href="classWt_1_1WAbstractItemView.html">WAbstractItemView</a></dt>
+  <dd><div>New editing API: edit(), closeEditor(), saveEditedValue(),
+    setEditOptions(), setEditTriggers().</div>
+    <div>Graceful degradation support using a paging navigation bar, which
+    may be customized by reimplementing createPageNavigationBar().</div>
+  </dd>
+  <dt><a href="classWt_1_1WCalendar.html">WCalendar</a>, <a href="classWt_1_1WDatePicker.html">WDatePicker</a></dt>
+  <dd>Added setBottom() and setTop() methods to specify a valid range.</dd>
+  <dt><a href="classWt_1_1WInteractWidget.html">WInteractWidget</a></dt>
+  <dd>Added a mouseDragged() event for responding to mouse moves while
+    a mouse button is down.</dd>
+  <dt><a href="classWt_1_1WItemDelegate.html">WItemDelegate</a></dt>
+  <dd>Implements editing using a WLineEdit.</dd>
+  <dt><a href="classWt_1_1WMenu.html">WMenu</a></dt>
+  <dd>Can now be used without a contents stack.</dd>
+  <dt><a href="classWt_1_1WSuggestionPopup.html">WSuggestionPopup</a></dt>
+  <dd>Added API to support dynamic server-side filtering.</dd>
+  <dt><a href="classWt_1_1WTableView.html">WTableView</a></dt>
+  <dd>New implementation which supports horizontal and vertical
+  virtual scrolling, column resizing, drag and drop, etc... like
+  WTreeView.</dd>
+  <dt><a href="classWt_1_1Chart_1_1WPieChart.html">Chart::WPieChart</a></dt>
+  <dd>Supports now also a shadow effect.</dd>
+  <dt><a href="classWt_1_1Dbo_1_1collection.html">Dbo::collection</a></dt>
+  <dd>A find() method has been added to refine the query of a many-side relational.</dd>
+  <dt><a href="classWt_1_1Dbo_1_1ptr.html">Dbo::ptr</a></dt>
+  <dd>A version() method returns the current version.</dd>
+  <dt><a href="classWt_1_1Dbo_1_1Query.html">Dbo::Query</a></dt>
+  <dd>An extra template parameter specifies a binding strategy. The
+  default binding strategy is DynamicBinding, which allows reuse of
+  the query object, and provides new API to modify the query:
+  where(), orderBy(), groupBy(), offset(), limit().</dd>
+  <dt><a href="classWt_1_1Dbo_1_1Session.html">Dbo::Session</a></dt>
+  <dd>Added support for use with a connection pool. Added execute()
+  method to execute an SQL statement.</dd>
+  <dt>Built-in httpd</dt>
+  <dd>Support for HTTP Range header and partial content servering.</dd>
+</dl>
+
+<h3>C) Changes that break existing applications:</h3>
+
+<dl>
+  <dt><a href="structWt_1_1Dbo_1_1query__result__traits.html">Dbo::sql_result_traits</a></dt>
+  <dd>This traits class has been renamed to query_result_traits and
+    its API has changed considerably. This will only impact when you
+    have implemented a custom traits specialization. The getColumns()
+    method has been replaced with a getFields() method, and the
+    loadValues() method has been renamed to load(). A getValues()
+    method has been added which provides conversion to boost::any's.
+  </dd>
+  <dt><a href="classWt_1_1WTableView.html">WTableView</a></dt>
+  <dd>This View class was reimplemented to have functionality
+    comparable to WTreeView. In the process, we had to abandon the
+    underlying &lt;table&gt; representation because of rendering
+    issues with Chrome (of all browsers!), although the WTableView
+    documentation specifically promised that we would keep this.
+  </dd>
+</dl>
+
+<hr />
+
+<h2>Release 3.1.2 (March 26, 2010)</h2>
+
+<p>This release contains mostly bug fixes, and a few new features.</p>
+
+<h3>A) New classes:</h3>
+
+<dl>
+  <dt><a href="classWt_1_1WShadow.html">WShadow</a></dt>
+  <dd>Class representing a drop shadow effect (see below).</dd>
+  <dt><a href="classWt_1_1Dbo_1_1backend_1_1Postgres.html">Dbo/backend/Postgres</a></dt>
+  <dd>A Postgres backend has landed, contributed by Hilary Cheng.</dd>
+</dl>
+
+<h3>B) Main new features in existing classes:</h3>
+
+<dl>
+  <dt><a href="classWt_1_1WBoxLayout.html">WBoxLayout</a>, <a href="classWt_1_1WGridLayout.html">WGridLayout</a></dt>
+  <dd>Addition of horizontal and vertical splitter support (resize handles to
+    allow the user to adjust the layout), sponsored by Eurofer. The new API
+    methods are <a href="classWt_1_1WBoxLayout.html#00bdfb4d442bd8e8ad9c33b72692763f">setResizable()</a>, <a href="classWt_1_1WGridLayout.html#180c33a8f9e21a7b58f12e055fdb469e">setColumnResizable()</a> and <a href="classWt_1_1WGridLayout.html#6028853eb5a66d868323d0e034b69390">setRowResizable()</a></dd>
+  <dt><a href="classWt_1_1WCalendar.html">WCalendar</a></dt>
+  <dd>Improved the API to allow custom cell rendering, and custom handling
+    of selection. We have also made the API for selection consistent with other
+    widgets (like WTreeView), deprecating the old API.</dd>
+  <dt><a href="classWt_1_1WDateTime.html">WDateTime</a></dt>
+  <dd>Added <a href="classWt_1_1WDateTime.html#0d7f04bacc6ea6534bc61ec7305a8262">toPosixTime()</a> and <a href="classWt_1_1WDateTime.html#eb5f093554829688b36640f0977da541">fromPosixTime()</a> methods to interoperate with
+    <tt>boost::posix_time::ptime</tt>.</dd>
+  <dt><a href="classWt_1_1WFormWidget.html">WFormWidget</a></dt>
+  <dd>Added a <a href="classWt_1_1WFormWidget.html#92de7a4d9ca6796607dc9fd26f608436">setEmptyText()</a> method to implement a label inside a line edit or text area.</dd>
+  <dt><a href="classWt_1_1WPainter.html">WPainter</a></dt>
+  <dd>Added a <a href="classWt_1_1WPainter.html#9c727b82879ab055f3fcf4c9cdfc1f8d">setShadow()</a> method which defines a drop shadow to be used for subsequent
+  drawing actions.</dd>
+  <dt><a href="classWt_1_1WResource.html">WResource</a></dt>
+  <dd>Added a <a href="classWt_1_1WResource.html#06bb9dbe3ae195c320cfed7b062d448a">setInternalPath()</a> method which allow a resource to be deployed at a deterministic and "pretty" URL.</dd>
+  <dt><a href="classWt_1_1WString.html">WString</a></dt>
+  <dd>Added constructors that take a std::locale for interpreting a narrow
+    string in a given locale.</dd>
+  <dt><a href="classWt_1_1WWidget.html">WWidget</a></dt>
+  <dd>Added <a href="classWt_1_1WWidget.html#4f83592912a7f8fa4fd35dadde78ee74">setLayoutSizeAware()</a> and <a href="classWt_1_1WWidget.html#f432588db3d599f89b54121f2ede8d63">layoutSizeChanged()</a> methods which allow a widget to react to layout size changes.</dd>
+  <dt><a href="classWt_1_1Http_1_1Request.html">Http::Request</a></dt>
+  <dd>Added access to the request <a href="classWt_1_1Http_1_1Request.html#e76664f93462d9311ee671c93607e5ca">method()</a>.</dd>
+  <dt><a href="classWt_1_1Http_1_1Response.html">Http::Response</a></dt>
+  <dd>Added a <a href="classWt_1_1Http_1_1Response.html#7c14ba3ab34ff14461df3a4369118443">setStatus()</a> method to modify the response status.</dd>
+  <dt><a href="classWt_1_1Dbo_1_1Session.html">Dbo::Session</a></dt>
+  <dd>Added support for schema qualified tables, in
+    <a href="classWt_1_1Dbo_1_1Session.html#5886d450c052ae0ee15ab3c91e439229">Session::mapClass()</a> and the joinTable specified in <a href="group__dbo.html#g1a086b583fb150dbd4c5b4ba92bc177f">hasMany()</a>.<br />
+    Added API for dropping the schema: <a href="classWt_1_1Dbo_1_1Session.html#4c1fedb21e4e1cc44b182a34e8ebb4efdropTables()">dropTables()</a>. <br />
+    Added support for arbitrary queries in <a href="classWt_1_1Dbo_1_1Session.html#d39e953ef521eaa58c4c7e6ca1a6c19e">Session::query()</a>, including
+    queries that do not return result or do not select from tables.</dd>
+  <dt><a href="group__dbo.html#g8a2b653ff57f1459dfa2e556badd71d6">Dbo::field()</a></dt>
+  <dd>Allow size suggestion for std::string and WString mappings</dd>
+  <dt><a href="classWt_1_1Dbo_1_1SqlConnection.html">Dbo::SqlConnection, Dbo::SqlStatement</a></dt>
+  <dd>Added support for floating point types, binary data (using std::vector&lt;unsigned char&gt;) and date and date/time types.<br/>
+    Added methods for return dialect-specific information.<br/>
+    Added properties API.<br/>
+  </dd>
+  <dt><a href="structWt_1_1Dbo_1_1sql__value__traits.html">Dbo::sql_value_traits</a></dt>
+  <dd>Added support for backend-specific type mapping.</dd>
+  <dt>(internal) DomElement</dt>
+  <dd>Performance improvements in serializing the widgets to HTML
+    and/or JavaScript</dd>
+  <dt>Built-in httpd</dt>
+  <dd>Added a configuration option <tt>--max-request-size</tt> to
+  limit the size of a POST instead of the built-in default of 40
+  MB<br/> Added a configuration option
+  <tt>--max-memory-request-size</tt> to limit the size of a POST that
+  is handed in-memory. Bigger POSTs are handled using a spool file.
+  </dd>
+</dl>
+
+<hr />
+
+<h2>Release 3.1.1 (February 17, 2010)</h2>
+
+<p>The minimum boost version is now 1.36.</p>
+
+<p>This release handles mostly bug fixes, with as most visible change
+an update of the <i>polished</i> theme, which is now considered
+complete.</p>
+
+<h3>A) Security fixes:</h3>
+
+Because of the following fixes for security problems, we recommend anyone
+to upgrade live deployments of his application to the latest version.
+
+<dl>
+  <dt>Possible XSS vulnerability</dt>
+  <dd>Fixed a possible XSS attack where a user follows a link to a Wt web
+    application, taking advantage of unchecked insertions of the URL when
+    redirecting to the canonical page.</dd>
+  <dt>Possible UTF-8 vulnerability</dt>
+  <dd>Form values and JSignal arguments received from the browser are
+    now checked for sane UTF-8 encoding.</dd>
+</dl>
+
+<h3>B) New classes:</h3>
+
+<dl>
+  <dt><a href="classWt_1_1Dbo_1_1Dbo.html">Dbo/Dbo</a></dt>
+  <dd>An optional base class for a database object, providing access to its
+    id() and session().</dd>
+</dl>
+
+<h3>C) Main new features in existing classes:</h3>
+
+<dl>
+  <dt><a href="classWt_1_1WCanvasPaintDevice.html">WCanvasPaintDevice</a></dt>
+  <dd>Now implements native text rendering on Firefox and latest
+    Chrome and Safari browsers</dd>
+  <dt><a href="classWt_1_1WInPlaceEdit.html">WInPlaceEdit</a></dt>
+  <dd>Added a setEmptyText() method which sets the text to be
+    displayed when value is empty.</dd>
+  <dt><a href="classWt_1_1WPopupMenu.html">WPopopMenu</a></dt>
+  <dd>Added an exec(WWidget *location, Orientation orientation) method which
+    popups the menu besides another widget.</dd>
+  <dt><a href="classWt_1_1WSuggestionPopup.html">WSuggestionPopup</a></dt>
+  <dd>This class is now also style by the CSS theme.</dd>
+  <dt><a href="classWt_1_1WTemplate.html">WTemplate</a></dt>
+  <dd>Avoids now rerendering of already bound widgets when the
+    template is rerendered.</dd>
+  <dt><a href="classWt_1_1WTree.html">WTree</a>,
+    <a href="classWt_1_1WTreeNode.html">WTreeNode</a>,
+    <a href="classWt_1_1WTreeTable.html">WTreeTable</a>,
+    <a href="classWt_1_1WTreeTableNode.html">WTreeTableNode</a>
+  </dt>
+  <dd>These widgets are now theme-aware, and tree decoration styling
+    is provided by the theme. The setImagePack() APIs are now
+    no-ops</dd>
+  <dt><a href="classWt_1_1WWidget.html">WWidget</a></dt>
+  <dd>Added positionAt() method which positions a widget (absolutely) besides
+    another widget.</dd>  
+  <dt><a href="classWt_1_1Chart_1_1WAxis.html">Chart/WAxis></a></dt>
+  <dd>Added a setLabelFont() method.</dd>
+  <dt><a href="classWt_1_1Http_1_1Request.html">Http/Request</a></dt>
+  <dd>Added serverName(), serverPort(), path(), pathInfo(),
+    queryString(), urlScheme(), in(), contentType(), contentLength(),
+    userAgent() and clientAddress() methods which expose information
+    form the HTTP request to WResources.</dd>
+</dl>
+
+<h3>D) Build changes:</h3>
+
+<dl>
+  <dt>XML_FEATURES</dt>
+  <dd>This CMake option has been removed, and Mini-XML has been
+    replaced by a modified RapidXML xml parser (mostly because of the
+    hard-to-interpret Mini-XML license), but there are also nice
+    performance improvements.</dd>
+</dl>
+
+<hr />
+
+<h2>Release 3.1.0 (December 29, 2009)</h2>
+
+<p>This release contains several new features and classes, after a long
+  period of stabilization that happened before the 3.0.0 release.</p>
+
+<h3>A) New classes:</h3>
+
+<dl>
+  <dt><a href="classWt_1_1WAggregateProxyModel.html">WAggregateProxyModel</a></dt>
+  <dd>A model that provides support for drilling down through columns, supported
+  by WTreeView.</dd>
+  <dt><a href="classWt_1_1WCombinedLocalizedStrings.html">WCombinedLocalizedStrings</a></dt>
+  <dd>Combines different localized strings implementations.</dd>
+  <dt><a href="classWt_1_1WDateTime.html">WDateTime</a></dt>
+  <dd>Combines a calendar date (WDate) and a clock time (WTime).</dd>
+  <dt><a href="classWt_1_1WTemplate.html">WTemplate</a></dt>
+  <dd>Use an XHTML fragment as a template, with variables that are place
+  holders for strings or other widgets. See the blog example of how this
+  class can be used to simplify HTML/CSS based layout of widgets and
+  contents.</dd>
+  <dt><a href="classWt_1_1WTime.html">WTime</a></dt>
+  <dd>Represents a clock time (0-24 hours).</dd>
+  <dt><a href="group__dbo.html">Wt::Dbo</a></dt>
+  <dd>An Object Relational Mapping library. See the <a href="../../tutorial/dbo.html">tutorial here</a>.</dd>
+</dl>
+
+<h3>B) Main new features in existing classes:</h3>
+
+Most inline CSS styles have been pushed out to an external style
+sheet, which may be themed. The "default" theme provides the old look,
+while a new "polished" theme provides a less boring (?) look for
+several widgets (work in progress). The theme can be set using <a
+href="classWt_1_1WApplication.html">WApplication::setCssTheme()</a>.
+
+As a result, you will need to deploy Wt's <tt>"resources/"</tt>
+folder, which contains the themes in <tt>"resources/themes/"</tt>, for
+all but the most trivial applications.
+
+<dl>
+  <dt><a href="classWt_1_1Signal.html">Signal</a></dt>
+  <dd>Added a template connect() method which may be given any function
+  object, providing also support for the (future) c++1x lambda functions.</dd>
+  <dt><a href="classWt_1_1WCanvasDevice.html">WCanvasDevice</a></dt>
+  <dd>Several optimizations to output more concise JavaScript.</dd>
+  <dt><a href="classWt_1_1WPaintedWidget.html">WPaintedWidget</a></dt>
+  <dd>When width and/or height is not set using resize(), the widget
+  will now properly react to layout management when put into a layout
+  manager, triggering a server-side rerendering when needed.</dd>
+  <dt><a href="classWt_1_1WSlider.html">WSlider</a></dt>
+  <dd>A sliderMoved() signal was added which is fired whenever the slider is
+  moved (but not yet released).</dd>
+  <dt><a href="classWt_1_1WWidget.html">WWidget</a></dt>
+  <dd>Added a find() method which searches the widget hierachy for a widget
+  with a particular objectName().</dd>
+  <dt><a href="classWt_1_1WServer.html">WServer</a></dt>
+  <dd>Added an addResource() method to bind static resources to particular
+  URLs (i.e. resources that are not bound to a specific session).</dd>
+  <dt><a href="classWt_1_1Ext_1_1Container.html">Ext::Container</a></dt>
+  <dd>Will now properly react to layout management from a layout that
+  is set for a WContainerWidget.</dd>
+  <dt><a href="classWt_1_1Ext_1_1FormField.html">Ext::FormField</a></dt>
+  <dd>Added changed(), blurred() and focussed() signals.</dd>
+  <dt><a href="classWt_1_1Chart_1_1WAxis.html">Chart::WAxis</a></dt>
+  <dd>Added setAutoLimits() and autoLimits() methods to configure which limits
+  are to be determined based on the data, and which are explicitly set.</dd>
+  <dt><a href="classWt_1_1Chart_1_1WDataSeries.html">Chart::WDataSeries</a></dt>
+  <dd>Added the setHidden() and hidden() methods to enable or disable
+  a data series. Added setBarWidth() and barWidth() methods to set the
+  width of a bar (useful mostly for scatter plots). Added
+  setMarkerSize() and markerSize() methos.</dd>
+  <dt><a
+  href="classWt_1_1Chart_1_1WCartesianChart.html">Chart::WCartesianChart</a></dt>
+  <dd>Use MarkerPenColorRole and MarkerBrushColorRole to override
+  colors for makers on a per data point basis. Added mapFromDevice()
+  and mapToDevice() methods for mapping device coordinates to chart
+  coordinates and vice-versa</dd>
+  </dl>
+
+<h3>C) API Changes:</h3>
+
+<dl>
+  <dt><a href="classWt_1_1WSlider.html">WSlider</a></dt>
+  <dd>Not really an API change, but the vertical slider is now showing
+  the maximum value at its top side, not its bottom side.</dd>
+  <dt><a href="classWt_1_1Chart_1_1WAxis.html">Chart::WAxis</a></dt>
+  <dd>The minimum() and maximum() methods will now return the calculated
+  minimum and maximum value when they are to be automatically calculated based
+  on the data, configured using setAutoLimits()</dd>
+</dl>
+
+<h3>D) Build changes:</h3>
+
+<dl>
+  <dt>XML_FEATURES</dt>
+  <dd>A new configuration option, XML_FEATURES, was added which allows the library to be built without MiniXML (and disabling fatures that require Mini-XML support). This configuration option is likely to be removed again in future versions.</dd>
+  <dt>Documentation</dt>
+  <dd>A <tt>doc</tt> directive was added, which uses doxygen and asciidoc tools
+  to generate the reference documentation and tutorial.</dd>
+  <dt>Tests</dt>
+  <dd>Automated tests were added for non-interactive functionality,
+  and are built by default.</dd>
+</dl>
+
+<hr />
+
+<h2>Release 3.0.0 (November 3, 2009)</h2>
+
+<p>
+This release contains mostly bug fixes, build improvements and
+documentation improvements compared to the latest pre-release
+(2.99.5).
+</p>
+
+<p>
+Most build improvements are related to finding the boost
+libraries. Previously, Wt used a custom script, since CMake versions
+&lt; 2.6 did not provide a good enough script for finding
+boost. Starting with this release, when using CMake 2.6 or later, Wt
+will use the script that comes with CMake. You can still fall back to
+the script that comes with Wt, which is still used for older versions
+of CMake, by defining one of the BOOST_COMPILER or BOOST_VERSION
+variables.
+</p>
+
+<h3>A) New classes:</h3>
+
+<i>No new classes</i>
+
+<h3>B) Main new features in existing classes:</h3>
+
+<dl>
+  <dt><a href="classWt_1_1WDialog.html">WDialog</a></dt>
+  <dd>It is now possible to have multiple modal dialogs, and nested
+  recursive event loops.</dd>
+  <dt><a href="classWt_1_1WWidget.html#e29fe35b633ec166f922419cd3ca9d96">
+      WWidget</a></dt>
+  <dd>The <samp>setDisabled()</samp> method moved up
+  from <samp>WFormWidget</samp> to <samp>WWidget</samp>.</dd>
+  <dt><a href="classWt_1_1JSlot.html#3d65b00a8015e556580527b52750ef87">
+      JSlot</a></dt>
+  <dd>The <samp>exec()</samp> method now passes object and event to the
+    JavaScript event handler.</dd>
+</dl>
+
+<h3>C) API Changes:</h3>
+
+<dl>
+  <dt><a href="classWt_1_1WResource.html">WResource</a></dt>
+  <dd>The handling of changes to the resource has been sanitized. A
+  new method, <samp>setChanged()</samp> was added which must be called
+  to notify users of the resource that the resource was changed. In
+  addition to the existing <samp>generateUrl()</samp> which generates
+  a new URL, a method was added which merely returns the existing
+  URL: <samp>url()</samp>. With these improvements, a resource can
+  effictively be shared by many view widgets and updated with the
+  minimum of bandwidth usage.</dd>
+</dl>
+
+<hr />
+
+<h2>Release 2.99.5 (September 1, 2009)</h2>
+
+<p>
+This release contains mostly bug fixes. The previous release (2.99.4)
+contains some critical bugs that cause mayhem on IE, and a regression
+with server push.
+</p>
+
+<hr />
+
+<h2>Release 2.99.4 (August 27, 2009)</h2>
+
+<p style="text-align: center">
+  <b>!! This release contains bugs that render it unusable on IE !!</b>
+</p>
+
+<p>
+This release contains mostly bug fixes and back-end improvements. The
+most exciting new feature is the addition of a new bootstrap method,
+which implements progressive enhancements (starting with a plain HTML
+page, and then upgrading it to an AJAX page if the browser has
+support), see
+also <a href="/wt/doc/reference/html/overview.html#progressive_bootstrap">the
+documentation</a>.
+</p>
+
+<h3>A) New classes:</h3>
+
+<dl>
+  <dt><a href="classWt_1_1WTableView.html">WTableView</a></dt>
+  <dd>This is a simple MVC View class that renders tabular data
+    in the most straight forward way using an HTML table element
+  </dd>
+</dl>
+
+<h3>B) Main new features in existing classes:</h3>
+
+<dl>
+  <dt><a href="classWt_1_1Ext_1_1ToolBar.html#931b9b3e5d4cbbdee5394a841752c849">Ext::ToolBar</a></dt>
+  <dd>Added insert() methods.</dd>
+  <dt><a href="classWt_1_1WApplication.html#78016406c4746c56b2c2ffce7c5e181f">WApplication</a></dt>
+  <dd>Added an enableAjax() method which notifies the application that
+    a session is being enhanced with AJAX capabilities when using the
+    progressive bootstrap method.</dd>
+  <dt><a href="classWt_1_1WWidget.html#919a4eaf68ff52f06f6a726d55dfb768">WWidget</a></dt>
+  <dd>Added an enableAjax() method which enhanced the widget with AJAX
+    capabilities when using the progressive bootstrap method.</dd>
+  <dt><a href="classWt_1_WCssDecorationStyle.html">WCssDecorationStyle</a></dt>
+  <dd>Add support for custom cursors.</dd>
+  <dt><a href="classWt_1_WWServer.html">WServer</a></dt>
+  <dd>For FastCGI deployments, the proxy process which directs FastCGI
+  requests to the correct session process is now also
+  multi-threaded.</dd>
+</dl>
+
+<h3>C) API Changes:</h3>
+
+<dl>
+  <dt>The <a href="classWt_1_1WApplication.html#4a6f167bea94aefa8ba24f914c2fbee5">WApplication::notify()</a> behavior changed.</dt>
+  <dd>Previously during a request, this method was called multiple
+  times during event propagation and rendering of the
+  application. Now, the method is called exactly once for each
+  request. In this way, it becomes a useful entry point to also manage
+  resource usage during (and inbetween) requests.</dd>
+</dl>
+
+<hr />
+
+<h2>Release 2.99.3 (July 24, 2009)</h2>
+
+<p>
+This release contains mostly bug fixes and small feature
+improvements. The most notable change that might affect existing
+applications is a simplified internal path API behavior.
+</p>
+
+<h3>A) New classes:</h3>
+
+<dl>
+  <dt><a href="classWt_1_1WAbstractItemDelegate.html">WAbstractItemDelegate</a>
+    and <a href="classWt_1_1WItemDelegate.html">WItemDelegate</a></dt>
+  <dd><samp>WAbstractItemDelegate</samp> is a helper class used
+    by <samp>WTreeView</samp> (and in the future perhaps other view
+    classes) to render contents. The standard
+    implementation, <samp>WItemDelegate</samp> maintains the default
+    implementation that was previously integrated
+    in <samp>WTreeView</samp>. The delegate will be responsible for
+    editing features in <samp>WTreeView</samp> in the future, and in
+    fact, you can already implement a custom item delegate that does
+    editing if you cannot wait for it!
+  </dd>
+  <dt><a href="classWt_1_1Test_1_1WTestEnvironment.html">Test/WTestEnvironment</a></dt>
+  <dd><samp>WTestEnvironment</samp> is an environment class which is useful for
+    (unit) test-cases: it allows the instantiation of a
+    <samp>WApplication</samp> so that you may include widgets in unit tests.
+  </dd>
+</dl>
+
+<h3>B) Main new features in existing classes:</h3>
+
+<h3>C) API Changes:</h3>
+
+<dl>
+  <dt>change of WApplication::internalPathChanged() semantics.</dt>
+  <dd>The old behavior was that a single internal path change caused
+  by the user (e.g. by moving forward/backword through his browser
+  history) would cause repetitive invocations of internalPathChanged()
+  with different arguments. The underlying idea was that this would
+  make it easier to have the handling of internal path changes
+  distributed over different objects. It caused however more problems
+  than it solved. The new behavior is now that it is invoked exactly
+  one time, and the argument is simply the new internal path.</dd>
+</dl>
+
+<hr />
+
+<h2>Release 2.99.2 (May 29, 2009)</h2>
+
+<p>
+This release contains mostly build improvements, bug fixes, and API cleanups.
+</p>
+
+<h3>A) New classes:</h3>
+
+<dl>
+  <dt><a href="classWt_1_1Http_1_1Client.html">Http/Client</a></dt>
+  <dd><samp>Client</samp> is a utility class to bootstrap a new Wt
+  application.</dd>
+</dl>
+
+<h3>B) Main new features in existing classes:</h3>
+
+<dl>
+  <dt><a href="classWt_1_1Ext_1_1FormField.html">Ext::FormField</a></dt>
+  <dd>Add setFocus() method.</dd>
+  <dt><a href="classWt_1_1Ext_1_1ToolBar.html">Ext::ToolBar</a></dt>
+  <dd>Added an addStretch() method (contributed by David Galicia).</dd>
+  <dt><a href="classWt_1_1Http_1_1Response.html">Http::Response</a></dt>
+  <dd>Added a continuation() method.</dd>
+  <dt><a href="classWt_1_1WCheckBox.html">WCheckBox</a></dt>
+  <dd>Add support for tri-state checkboxes. These are also supported
+  by item models and WTreeView.</dd>
+  <dt><a href="classWt_1_1WWDialog.html">WDialog</a></dt>
+  <dd>Support for non-modal dialogs and interactive moving.</dd>
+  <dt><a href="classWt_1_1WFormWidget.html">WFormWidget</a></dt>
+  <dd>New methods setReadOnly() and isReadOnly().</dd>
+  <dt><a href="classWt_1_1WGridLayout.html">WGridLayout</a></dt>
+  <dd>Support a row stretch value of -1, which is like 0 but will still
+  manage the height of cells (allowing their contents to fill the entire
+  cell).</dd>
+  <dt><a href="classWt_1_1WPaintDevice.html">WPaintDevice</a></dt>
+  <dd>Support update rendering (not erasing the current canvas) using
+  paint flags.</dd>
+</dl>
+
+<h3>C) API Changes:</h3>
+
+<dl>
+  <dt>WFileUpload::isUploaded() was deprecated</dt>
+  <dd>The name was not covering its actual behavior: instead of
+  checking whether a file has been uploaded, it returns whether true
+  when a call to upload() is not needed. You should replace any call
+  to isUploaded() with the new method
+  <a href="classWt_1_1WFileUpload.htm#66376fb4668a037760a91abad9f83f8al">!canUpload()</a> (<b>note the inversion!</b>.</dd>
+</dl>
+
+<hr />
+
+<h2>Release 2.99.1 (Mar 20, 2009)</h2>
+
+<p>
+This release contains only build improvements, bug fixes, and API cleanups.
+</p>
+
+<hr />
+
+<h2>Release 2.99.0 (Mar 4, 2009)</h2>
+
+<p>
+This release is a preview for Wt 3.0.0. Many things have changed both
+in the internals and the API. This is the first release that provides
+several API changes which are not backward compatible (some of which
+were post-poned until now).
+
+Please read the following notes carefully, especially sections C) and
+D), to understand what changes to expect and how to adapt existing
+applications.
+</p>
+
+<p>
+Support for the C++ boost library &lt; 1.35 has been dropped: Wt now
+requires at least boost >= 1.35.0.
+</p>
+
+<h3>A) New classes:</h3>
+
+<dl>
+  <dt><a href="classWt_1_1WFlags.html">WFlags</a></dt>
+  <dd><samp>WFlags</samp> is a utility class that provides a type-safe ORing of
+  enum flags. It is used everywhere in the Wt API where previously an
+  <samp>int</samp> was used to allow enums to be ORed together.</dd>
+  <dt><a href="classWt_1_1WGoogleMap.html">WGoogleMap</a></dt>
+  <dd>This is a widget, contributed by Richard Ulrich, that displays a
+  Google map.</dd>
+  <dt><a href="classWt_1_1Http_1_1Request.html">Http::Request</a>, <a href="classWt_1_1Http_1_1Response.html">Http::Response</a>, <a href="classWt_1_1Http_1_1ResponseContinuation.html">Http::ResponseContinuation</a> and <a href="classWt_1_1Http_1_1UploadedFile.html">Http::UploadedFile</a></dt>
+  <dd>These are utility classes which model an HTTP request and
+  response and that are used in the new <samp>WResource</samp> API.</dd>
+</dl>
+
+<h3>B) Main new features in existing classes:</h3>
+
+<dl>
+  <dt><a href="classWt_1_1WApplication.html#d9631ca64e68d30d40cb49c90e55223d">WApplication::enableUpdates()</a></dt>
+  <dd>Server-initiated updates (aka "server push") has been
+  reimplemented and now works reliably in all situations, including in
+  the presence of intermediate proxies. The dependency on the 3rd
+  party JS orbited library has been removed and replaced with a simple
+  XHR-based solution.</dd>
+  <dt><a href="classWt_1_1WButtonGroup.html">WButtonGroup</a></dt>
+  <dd>Various methods were added: id's may be associated with a specific
+  radio buttons, which may be used to identify a particular button.</dd>
+  <dt><a href="classWt_1_1WDatePicker.html">WDatePicker</a></dt>
+  <dd>Is now easier to use because of a sensible default constructor
+  that also creates the line edit using a <samp>WDateValidator</samp>,
+  and creates the icon which is associated with the popup.</dd>
+  <dt><a href="classWt_1_1WFileResource.html">WFileResource</a></dt>
+  <dd>Uses the continuation support in the new <samp>WResource</samp> API
+  to transmit the file in chunks.</dd>
+  <dt><a href="classWt_1_1WLength.html">WLength</a></dt>
+  <dd>WLength::Auto was added, is a synonym for WLength()</dd>
+  <dt><a href="classWt_1_1WSuggestionPopup.html">WSuggestionPopup</a></dt>
+  <dd>Is now also an MVC View widget, reading its data from a
+  <samp>WAbstractItemModel</samp></dd>
+  <dt><a href="classWt_1_1WTable.html">WTable</a></dt> <dd>New method
+  setHeaderCount() to specify the number of first rows or columns that
+  should be rendered as an HTML table header
+  (<samp>&lt;th&gt;</samp>).</dd>
+  <dt><a href="classWt_1_1WWidget.html">WWidget</a></dt>
+  <dd><p>New virtual method <samp>rerender()</samp> which allows a
+  widget to prepare itself before rendering (and defer internal
+  changes until that time). A widget may ask to be rerendered using
+  <samp>askRerender()</samp></p> <p><samp>Widget</samp> no longer
+  inherits from <samp>WResource</samp>, but instead inherits directly from
+  <samp>WObject</samp>. It was simply a bad idea, and not useful for
+  anything.</p></dd>
+</dl>
+
+<h3>C) Changes that break existing applications:</h3>
+
+<dl>
+  <dt>1) Signals are no longer public members</dt>
+  <dd><p>Instead, they are now accessor member functions:
+  e.g. <samp>WInteractWidget::clicked</samp> has been renamed to
+  <samp>WInteractWidget::clicked()</samp>. This has as major benefit
+  that signals can be created on-demand, which leads to drastically
+  lower memory usage and signifcant speedups especially on embedded
+  systems.</p> <p>The change requires that everywhere in your code
+  where you access a signal, you will need to change to add
+  parentheses. For consistency, you may also want to
+  use the same convention for your own widget classes that define
+  signals.</p></dd>
+  <dt>2) <a href="classWt_1_1WResource.html">WResource</a></dt>
+  <dd><p>The API has been redesigned and greatly simplified. If you are
+  implementing your own resources, then you will need to redesign your
+  implementation. The new API is simpler (requires only one virtual
+  method to be implemented) and more powerful, providing support for
+  <i>continuations</i> to serve large resources without blocking a
+  thread or requiring large memory usage.</p>
+  <p>In addition, resources have better thread-safety: they are now by
+  default reentrant (requests for a single resource may be handled
+  concurrently) and they are protected from concurrently being
+  destroyed by the main event loop.</p></dd>
+  <dt>3) <a href="classWt_1_1WValidator.html">WValidator</a></dt>
+  <dd><p>The signature for the virtual <samp>validate()</samp> method was
+  changed: parameter <samp>pos</samp> which was ignored anyway has
+  been removed.</p></dd>
+  <dt>4) <a href="classWt_1_1WEnvironment.html">WEnvironment</a></dt>
+  <dd><p>The methods <samp>getArgument()</samp> and
+  <samp>arguments()</samp> were renamed to respectively
+  <samp>getParameter()</samp> and <samp>getParameterMap()</samp>. The
+  signature for <samp>getParameter()</samp> is also different as it
+  returns a pointer to a string, which is 0 when the parameter is not
+  defined, instead of the olde behaviour of throwing an
+  exception. There is a new method that allows to read all values for
+  a parameter, <samp>getParameterValues()</samp></p></dd>
+  <dt>5) <a href="classWt_1_1ModelIndex.html">WModelIndex</a></dt>
+  <dd><p>The 20-byte SHA1 hash based internal pointer has been removed
+  again as the object increase and overhead could not be justified.</p></dd>
+</dl>
+
+<h3>D) Deprecated API that was removed:</h3>
+
+These are API calls that were deprecated in earlier releases, and have now
+been completely removed from the library:
+
+<dl>
+  <dt><samp>WApplication::applicationName()</samp></dt>
+  <dd>Use <a
+  href="classWt_1_1WApplication.html#ab6320ecdd0e8e4026e9ef1aca710ca5">
+  WApplication::internalPath()</a> instead.</dd>
+  <dt><samp>WApplication::setState()</samp></dt>
+  <dd>Use <a
+  href="classWt_1_1WApplication.html#2c1a10aadc0d7ed877b5715b42ca4911">WApplication::setInternalPath()</a>
+  instead.</dd>
+  <dt><samp>WApplication::state()</samp></dt>
+  <dd>Use <a
+  href="classWt_1_1WApplication.html#ab6320ecdd0e8e4026e9ef1aca710ca5">
+  WApplication::internalPath()</a> instead.</dd>
+  <dt><samp>WApplication::stateChanged</samp></dt>
+  <dd>Use <a
+  href="classWt_1_1WApplication.html#3e68c4b6bb387f27a614e7962e11967b">WApplication::internalPathChanged()</a>
+  instead.</dd>
+  <dt><samp>WRegExpValidator::WRegExpValidator(const boost::regex&amp;)
+  </samp></dt>
+  <dd>Use the <a
+  href="classWt_1_1WRegExpValidator.html#7536b67e2bedd2dfdb5b89c9dd56602b">WRegExpValidator(const
+  WString&amp;)</a> constructor instead.</dd>
+  <dt><samp>WPainterPath::drawArc(..., width, height, ...)</samp></dt>
+  <dd>An elliptical arc segment could not be support on all devices.</dd>
+  <dt><samp>WTable::numRows()</samp></dt>
+  <dd>Use <a href="classWt_1_1WTable.html#79d5dfe40ee5e67c5007ee370e8cd2f3">WTable::rowCount()</a>.</dd>
+  <dt><samp>WTable::numColumns()</samp></dt>
+  <dd>Use <a
+  href="classWt_1_1WTable.html#4d062330d1c9b3f202985b92dcb59d4f">WTable::columnCount()</a>
+  instead.</dd>
+  <dt><samp>WText::setFormatting()</samp> and
+  <samp>WText::formatting()</samp></dt>
+  <dd>Use <a href="classWt_1_1WText.html#f22c64c4c5fed3d2aef0915a7e5c5866">WText::setTextFormat()</a> and
+  <a href="classWt_1_1WText.html#c0976c36c5181a534f161ca3724d4296">WText::textFormat()</a> instead.</dd>
+</dl>
+
+<hr />
+
+<h2>Release 2.2.3 (Jan 26, 2009)</h2>
+
+<p>This release is a maintenance release, with mostly bug fixes and
+feature improvements.</p>
+
+<h3>A) Main new features in existing classes:</h3>
+
+<dl>
+  <dt><a href="classWt_1_1WAbstractItemModel.html">WAbstractItemModel</a>:</dt>
+  <dd><samp>const char *</samp> data in <samp>boost::any</samp> is now
+    also supported.</dd>
+  <dt><a href="classWt_1_1WAbstractProxyModel.html">WAbstractProxyModel</a>:
+  </dt><dd>Implemented <samp>toRawIndex()</samp>
+    and <samp>fromRawIndex()</samp> so that indexes can be recovered
+    when the model's layout is changed, if the underlying model
+    provides implementations for <samp>toRawIndex()</samp>
+    and <samp>fromRawIndex()</samp>.</dd>
+  <dt><a href="classWt_1_1WComboBox.html">WComboBox</a>:</dt>
+  <dd>Also supports <samp>StyleClassRole</samp> data role for items</dd>
+  <dt><a href="classWt_1_1WDialog.html">WDialog</a>:</dt>
+  <dd>New method <samp>setTitleBarEnabled()</samp> to disable the default
+  title bar.</dd>
+  <dt><a href="classWt_1_1WMenu.html">WMenu</a>:</dt>
+  <dd>New method <samp>removeItem()</samp>, only works when rendered as a
+    list.</dd>
+  <dt><a href="classWt_1_1WTabWidget.html">WTabWidget</a>:</dt>
+  <dd>New method <samp>removeTab()</samp>.</dd>
+  <dt><a href="classWt_1_1WTreeView.html">WTreeView</a>:</dt>
+  <dd><ul>
+      <li>New method <samp>setColumn1Fixed()</samp> to fix the first
+    column while scrolling horizontally through the other columns.</li>
+      <li>New method <samp>setColumnFormat()</samp> to control formatting of
+    data.</li>
+      <li>New method <samp>setColumnBorder()</samp> to set the
+    internal column border color.</li>
+      <li>New method <samp>setColumnResizeEnabled()</samp> to disable resize
+    handles.</li>
+      <li>The view now also reacts correctly to insertion and
+    removal of model columns.</li>
+    </ul>
+  </dd>
+</dl>
+
+<h3>B) New examples</h3>
+
+<dl>
+  <dt><a href="http://www.webtoolkit.eu/wt/examples/gitmodel/gitview.wt">
+      gitmodel:</a></dt>
+  <dd>An example that demonstrates how to implement a custom abstract
+    item model.</dd>
+  <dt><a href="http://www.webtoolkit.eu/wt/examples/treeview-dragdrop/treeview-dragdrop.wt">treeview-dragdrop</a>:</dt>
+  <dd>An example that demonstrates drag and drop support in WTreeView.</dd>
+</dl>
+
+<h3>C) Changes that break backward compatibility</h3>
+
+<dl>
+  <dt><a href="classWt_1_1WApplication.html">WApplication</a>:</dt>
+  <dd><samp>useStyleSheet()</samp> only supports a subset of IE condition
+    strings, since the string is now parsed by Wt rather than by IE (when
+    dynamically loading stylesheets, the comment-syntax does not work
+    reliably).</dd>
+</dl>
+
+<hr />
+
+<h2>Release 2.2.2 (Dec 1, 2008)</h2>
+
+<p><i>As of now, we will also be listing noteworthy new API features,
+even if they are no concern for backwards compatibility.</i></p>
+
+<h3>A) New classes:</h3>
+
+<dl>
+  <dt><a href="classWt_1_1WPopupMenu.html">WPopupMenu</a>,
+    <a href="classWt_1_1WPopupMenuItem.html">WPopupMenuItem</a>:</dt>
+  <dd>A popup menu, which you would typically use to present a
+  context menu.</dd>
+  <dt><a href="classWt_1_1WAbstractProxyModel.html">WAbstractProxyModel</a>,
+    <a href="classWt_1_1WSortFilterProxyModel.html">WSortFilterProxyModel</a>:</dt>
+  <dd>Proxy models, which present data from a source model in a
+  different way.</dd>
+  <dt><a href="classWt_1_1WLoadingIndicator.html">WLoadingIndicator</a>, <a href="classWt_1_1WDefaultLoadingIndicator.html">WDefaultLoadingIndicator</a>,
+  <a href="classWt_1_1WOverlayLoadingIndicator.html">WOverlayLoadingIndicator</a>:</dt>
+  <dd>Customizable loading indicators.</dd>
+</dl>
+
+<h3>B) Main new features in existing classes:</h3>
+
+<dl>
+  <dt><a href="classWt_1_1WTreeView.html">WTreeView</a>, <a href="classWt_1_1WAbstractItemModel.html">WAbstractItemModel</a>:</dt>
+  <dd>The WAbstractItemModel interface was extended to allow handling
+  of drag &amp; drop events, and WTreeView now is able to start
+  dragging and handle dropping of item selections and other data.</dd>
+  <dt><a href="classWt_1_1JSignal.html">JSignal</a>:</dt>
+  <dd>You can now pass the original (keyboard/mouse) JavaScript event
+  as a parameter to custom signals.</dd>
+  <dt><a href="classWt_1_1WTreeView.html">WTreeView</a>:</dt>
+  <dd>access mouse event in itemClicked, doubleClicked and
+  mouseWentDown signals.</dd>
+  <dt><a href="classWt_1_1WServer.html">WServer</a>:</dt>
+  <dd>Support for widget-set mode, allowing a Wt application to be
+  embedded in an existing web page/application.</dd>
+</dl>
+
+<h3>C) Changes that break backward compatibility</h3>
+
+<p>This release does not contain changes that break existing
+applications.</p>
+
+<hr />
+
+<h2>Release 2.2.1 (Nov 3, 2008)</h2>
+
+<p>This release is as usually a mix of bug fixes, improvements and new
+features.</p>
+
+<p>We have made a significant change to the MVC system, which will
+break existing program code in case you have implemented your own
+models (i.e. deriving from <samp>WAbstractItemModel</samp>) or views
+widgets (i.e. components that listen to model changes).</p>
+
+<p>
+The <samp>WAbstractItemModel</samp> interface was changed to support
+hierarchical models. This means that most methods will now take an
+extra parameter that specifies the parent <samp>WModelIndex</samp>,
+and also all signals have now this extra parameter. Because the
+parameter has a default value of WModelIndex() which corresponds to
+the top level parent, the API is largely backwards compatible when
+merely using the model. It is only those classes that reimplement the
+interface, or listen to signal events, that are affected.
+</p>
+
+<p>
+The immediate benefit of the new <samp>WAbstracItemModel</samp>
+interface is that it allows us to implement View widgets like the new
+<samp>WTreeView</samp> widget.
+</p>
+
+<hr />
+
+<h2>Release 2.2.0 (Sept 12, 2008)</h2>
+
+<p>This release has a rather substantial rewrite (and simplification)
+of Wt's bootstrapping process. In the past, Wt used a frameset trick
+to be able to load the AJAX-based skeleton when JavaScript was
+available. Isntead, now, the entire AJAX-based stuff is loaded
+directly into the bootstrap page. A benefit of the new approach is
+that we avoid iframe tricks, which have been deprecated from strict
+HTML and XHTML. But, it was in fact motivated in the first place to
+support all major browsers for a new internal path API. This new API
+allows to fully support URL changes and bookmarks in a unified way
+(i.e. it works equally when the browser supports AJAX, no JavaScript,
+or is a bot such as google bot).</p>
+
+<p>As a consequence, this release contains the following changes that
+may break your application:</p>
+
+<ul>
+  <li><samp>WMenu::enableBrowserHistory()</samp> and <samp>WMenu::browserHistoryId()</samp> have been removed, use the new methods <samp>WMenu::setInternalPathEnabled()</samp> and <samp>WMenu::setInternalBasePath()</samp>
+  </li>
+  <li><samp>WMenuItem</samp> has been reorganized, and if you have
+  specialized WMenuItem you will need to adapt your reimplementation
+  to the new virtual interface. In the new interface, you need to
+  reimplement <samp>WMenuItem::createItemWidget()</samp> and
+  <samp>WMenuItem::updateItemWidget()</samp> allowing you to react to
+  item changes (internal path or text). The default implementation now
+  always uses a WAnchor.</li>
+  <li><samp>WApplication::setState()</samp>, <samp>WApplication::state()</samp> and <samp>WApplication::stateChanged</samp> have been deprecated. It is stronly advised that you use the new internal path API instead. This does require you to treat different parts of the state as a file hierarchy. See the <samp>WApplication::setInternalPath() documentation</samp>.
+  </li>
+</ul>
+
+<p>
+  The following methods have been deprecated (but are still supported):
+</p>
+<ul>
+  <li><samp>WTable::numRows()</samp> has been renamed
+  to <samp>WTable::rowCount()</samp>.</li>
+  <li><samp>WTable::numColumns()</samp> has been renamed
+  to <samp>WTable::columnCount()</samp>.</li>
+</ul>
+
+<hr />
+
+<h2>Release 2.1.5 (July 25, 2008)</h2>
+
+<p>Wt now installs its include files in a Wt/ subdirectory. You may
+want to change your build files to pick up this new include directory,
+or, change your code to scope the include files to look like
+#include&lt;Wt/WLineEdit&gt; instead of #include&lt;WLineEdit&gt;</p>
+
+<p>This release contains the following changes that may break your
+application:</p>
+
+<ul>
+  <li><samp>WText</samp> will validate XHTML text when it is set to the
+   widget. The old behaviour was to validate only before
+   rendering. The change was needed to be able to react to XML parse
+   errors. As a consequence if you are creating a WText with text that
+   is not valid XML, followed by a
+   call <samp>setFormatting(WText::PlainFormatting)</samp>, you should
+   change this now to use the new <samp>WText</samp> constructor which
+   takes the TextFormat as a new argument: <samp>new WText(text,
+   Wt::PlainText, parentWidget)</samp>
+  </li>
+  <li><samp>WContainerWidget::setLayout(WLayout *layout, bool fitWidth, bool
+   fitHeight)</samp> has been replaced with the more generic
+   <samp>WContainerWidget::setLayout(WLayout *layout, int
+   alignment)</samp>.
+  </li>
+</ul>
+
+<p>
+  The following methods and enumerations have been deprecated (but are
+  still supported):
+</p>
+<ul>
+  <li><samp>enum WText::Formatting</samp> has been renamed
+  to <samp>Wt::TextFormat</samp>. The old values map as follows on new
+  values:
+    <ul>
+      <li><samp>WText::XHTMLFormatting</samp> becomes <samp>Wt::XHTMLText</samp>;</li>
+      <li><samp>WText::XHTMLUnsafeFormatting</samp> becomes <samp>Wt::XHTMLUnsafeText</samp></li>
+      <li><samp>WText::PlainFormatting</samp> becomes <samp>Wt::PlainText</samp></li>
+    </ul>
+  </li>
+  <li><samp>WText::setFormatting()</samp> has been renamed
+  to <samp>WText::setTextFormat()</samp> and
+  <samp>WText::formatting()</samp> has been renamed
+  to <samp>WText::textFormat()</samp>.</li>
+</ul>
+
+<hr />
+
+<h2>Release 2.1.4 (July 4, 2008)</h2>
+
+<p>The following has changed for building Wt:</p>
+
+<ul>
+  <li>The CMake variable CONFIGURATION (which defaulted to
+  /etc/wt/wt_config.xml) is no longer used, but instead there is now a
+  CONFIGDIR (/etc/wt/) which is used to store configuration
+  files.
+  </li>
+</ul>
+
+<p>The following has changed in the wt_config.xml file:</p>
+
+<ul>
+  <li>The &lt;valgrind-path&gt; setting for the FCGI connector may now
+    be a command-line including arguments</li>
+</ul>
+
+<p>This release should not contain changes that may break your
+application.</p>
+
+<hr />
+
+<h2>Release 2.1.3 (May 20, 2008)</h2>
+
+<p>This release should not contain changes that may break your
+application.</p>
+
+<hr />
+
+<h2>Release 2.1.2 (April 14, 2008)</h2>
+
+<p>The following changes may break your application build:</p>
+
+<ul>
+  <li><samp>WTreeNode::expanded()</samp> has been renamed
+  to <samp>WTreeNode::isExpanded()</samp>.</li>
+</ul>
+
+<hr />
+
+<h2>Release 2.1.1 (April 10, 2008)</h2>
+
+<p>This release should not break any of your applications, but we did
+ deprecate some methods and enumeration types. You are advised to
+ migrate to the replacements methods since we will discontinue support
+ for the older ones in the future.</p>
+
+<p>
+  The following methods and enumerations have been deprecated:
+</p>
+<ul>
+  <li><samp>enum SelectionUnit</samp> has been renamed
+  to <samp>SelectionBehavior</samp>. The old values map as follows on new
+  values: <samp>CellSelection</samp> becomes <samp>SelectItems</samp>;
+    <samp>RowSelection</samp> becomes <samp>SelectRows</samp>.</li>
+  <li><samp>WWidget::setOffset(int sides, WLength)</samp> is deprecated,
+  and the new method is <samp>WWidget::setOffsets(WLength, int
+  sides)</samp>: the argument order has been switched to be consistent
+  with the method signature of <samp>setMargin()</samp>
+  and <samp>setPadding()</samp>.</li>
+  <li><samp>WResource::suggestFilename()</samp> has been renamed to
+  <samp>WResource::suggestFileName()</samp>.</li>
+</ul>
+
+<p>
+  The following changes affect run-time behaviour:
+</p>
+<ul>
+  <li><samp>WTreeNode</samp> now supports a policy for when to show a child count
+  indication. The old behaviour was to always show the child count.
+  Now, by default this option is disabled. Use
+  <samp>WTreeNode::setChildCountPolicy(Enabled)</samp> to get the old
+  behaviour back, if you wish.</li>
+</ul>
+
+<hr />
+
+<h2>Release 2.1.0</h2>
+
+<p>The library dependencies have changed slightly.</p>
+
+<p>
+To build Wt 2.1.0, you need:
+</p>
+<ul>
+  <li>CMake 2.4 or later</li>
+  <li>boost 1.34.1 (boost 1.33.1 might should still work, but is
+    not recommended)</li>
+  <li>asio 0.3.9: either the boost or non-boost version <i>(only
+      for the http connector)</i></li>
+  <li><i>optionally</i>, openssl for HTTPS support <i>(only for the http
+      connector)</i></li>
+  <li><i>optionally</i>, libz for gzip compression support <i>(only for
+      the http connector)</i></li>
+  <li>fcgi library, including C++ bindings (libfcgi++)<i>(only for the
+      fcgi connector)</i></li>
+</ul>
+<p>Furthermore, the Wt::Ext library has been upgraded and now wraps
+around the extjs 2.x library, instead of extjs 1.x.</p>
+
+<p>Some API changes may need a porting effort:
+</p>
+  <ul>
+    <li><samp>Ext::ProgressDialog</samp>: doesn't show by default, you
+    need to call show() to show the dialog.</li>
+    <li><samp>Ext::ContentPanel</samp>, <samp>Ext::BorderLayout</samp> have
+    been removed. They have been replaced with a stand-alone layout
+    system, that may manage contents in
+    an <samp>Ext::Container</samp>. The layout system provides
+    <samp>WBorderLayout</samp> and several other layout managers.</li>
+    <li><samp>WSignalMapper</samp> has been expanded to allow mapping of
+      signals with an extra argument, which is passed to the mapped
+      signal. Because of this, the signature of the class has been
+      expanded with an extra template argument. If you have forward
+      declarations to <samp>WSignalMapper</samp>, you will need to modify
+      these too (or simply include <samp>WSignalMapper</samp>).</li>
+    <li><samp>WAnchor</samp>: no longer uses a <samp>WLabel</samp> internally,
+      and the label-releated methods have been removed.</li>
+  </ul>
+
+<hr />
+
+<h2>Release 2.0.5</h2>
+
+<ul>
+  <li><samp>WDialog</samp> (and <samp>WMessageBox</samp>) usage changed, and
+    is now more like Qt. When you are not
+    using <samp>WDialog::exec()</samp> or <samp>WMessageBox::show(...)</samp>,
+    then you must explictly <samp>show()</samp> the dialog to show it. You
+    can now also <samp>hide()</samp> the dialog if you want.
+  </li>
+  <li>
+    Moved several enums from within classes to the Wt namespace. This is
+    likely to break your code at compile time when you are using one. The
+    fix is to remove the class scope from the enum type or value.
+    <ul>
+      <li><samp>WScrollArea::Orientation</samp> -> <samp>Wt::Orientation</samp></li>
+      <li><samp>WMenu::Orientation</samp> -> <samp>Wt::Orientation</samp></li>
+      <li><samp>WMessageBox::StandardButton</samp> -> <samp>Wt::StandardButton</samp></li>
+      <li><samp>WMessageBox::Icon</samp> -> <samp>Wt::Icon</samp></li>
+    </ul>
+  </li>
+</ul>
+
+<hr />
+
+<h2>Release 2.0.4</h2>
+
+<i>Important: 2.0.4a contains a fix for a bug introduced in 2.0.4 that
+  reset the deploy-path in wthttpd.</i>
+
+<p>
+  This release adds a few new features:
+</p>
+  <ul>
+    <li><samp>WComboBox</samp> (and <samp>WSelectionBox</samp>) now use
+      a <samp>WAbstractItemModel</samp> in a more flexible model/view
+      system.</li>
+    <li>Stylesheets may be browser-conditional (by Patrick Fischer)</li>
+    <li>wthttpd may serve custom error pages (by Patrick Fischer)</li>
+    <li><samp>WResource</samp> can now access HTTP GET or POST query
+      arguments. This will break your code (at compile time) if you
+      have implemented your own <samp>WResource</samp>, since the signature of the
+      <samp>streamResourceData()</samp> method has been changed to pass
+      the arguments map as a second parameter.</li>
+  </ul>
+
+<hr />
+
+<h2>Release 2.0.1</h2>
+
+<p>
+  This release fixes some build-related problems, as well as smaller
+  bugs. The main improvement in this release is related to use of Wt
+  in resource-constrained embedded systems.
+</p>
+
+<p>
+  The most visible change is that the dependency on the Xerces C++ XML
+  library was dropped in favour of the much smaller Mini-XML
+  library. The draw-back is a reduction of supported character
+  encodings to only UTF8 and UTF16, next to the default locale character
+  encoding (which is typically an 8-bit flavour).
+</p>
+
+<p>
+  When using the built-in httpd, you can now disable support for SSL
+  at compile time, freeing a number of SSL-related dependencies.
+</p>
+
+<p>
+  In the API, more comparison operators (== and !=) were added to
+  WString, and a WViewWidget was added for simple MVC widgets (with
+  the main purpose to reduce session-state at the server).
+</p>
+
+<hr />
+
+<h2>Release 2.0.0</h2>
+
+<p>
+  This release contains numerous changes which are likely to cause some
+  porting effort for Wt 1.1.x applications to work properly.
+</p>
+
+<p>
+<b>If you are upgrading from a 1.99.x release, you will notice that
+some of these notes have actually evolved, especially with respect to
+WString and unicode support.</b>
+</p>
+
+<p>
+  Here is a list of changes with respect to Wt 1.1.x that are likely
+  to require your attention, and some tips on how to do the porting.
+</p>
+
+<h4>1) Namespace Wt</h4>
+
+<p>All Wt classes are now inside the namespace <samp>Wt</samp>.</p>
+
+<p>To handle this change, you will need to:
+</p>
+  <ul>
+    <li>Wrap forward declarations to Wt widgets in header files inside a
+      Wt namespace, or <samp>#include &lt;WFwdDeclarations&gt;</samp></li>
+    <li>and scope all Wt classes with <samp>Wt::</samp>, </li>
+    <li>or import the Wt namespace: <samp>using namespace Wt;</samp></li>
+  </ul>
+
+<h4>2) WString</h4>
+
+<p>
+  Previously, most widgets offered double methods that either used a
+  <samp>std::string</samp> for literal text, or a
+  <samp>WMessage</samp> for localized text.
+</p>
+
+<p>
+  In the new release, widgets use <samp>Wt::WString</samp> for both
+  literal and localized text. WString offers unicode support for both
+  literal as well as localized text. To create a literal string,
+  simply assign or construct a Wt::WString from that string. The
+  strings supported or both narrow and wide C and C++ strings. UTF8
+  encoded narrow strings may also be converted. To create a localized
+  string, use one of the static methods <samp>WString::tr(const
+  std::string key)</samp> and <samp>WWidget::tr(const std::string
+  key)</samp>.
+</p>
+
+<p>
+  To help with legacy code, WMessage is now a typedef for WString, but
+  is deprecated and should not be used in new code. Unfortunately, the
+  constructors <samp>WMessage(const char *text)</samp> and
+  <samp>WMessage(const std::string text)</samp>, changed meaning!
+  While previously they took a key to construct a localized message,
+  they now take a literal text (the exact opposite!), since they are
+  in fact plain WString() constructors. As a consequence your application
+  will display key values instead of resolving those values (but will
+  not break entirely).
+</p>
+<p>
+  The new approach offers the benefit of only requiring one method
+  signature for both literal and localizable text. This not only
+  simplifies our work, but more importantly by using
+  <samp>WString</samp> for displayed text in the API of your own
+  widgets, localization (including the automatic language switching)
+  comes automatically and is decided on by the user of your widget.
+</p>
+<p>
+  Fortunately, there is a straightforward trick to handle most consequences
+  of this change:
+</p>
+  <ul>
+   <li>Replace <samp>WMessage(...)</samp> with <samp>tr(...)</samp>,</li>
+   <li>add <samp>.value()</samp> when using the result of functions such
+     as <samp>WText::text()</samp>,</li>
+   <li>change your own classes to use <samp>WString</samp>
+     wherever they expect some text that will be displayed, instead of
+     std::string or WMessage.</li>
+  </ul>
+
+<h4>3) Wide string API</h4>
+
+<p>
+  Since Wt 2.0.0, the API for Wt has been changed to use WString
+  instead of C++ narrow strings. WString supports both narrow and wide
+  strings, and provides conversion between both. It does not provide
+  string operations, however, and instead acts as a string
+  container. You should convert to a C++ string type to perform
+  operations. You should also not use WString outside of the user
+  interface part of your application.
+</p>
+
+<h4>4) No more wmain()</h4>
+
+<p>
+  Previously, the Wt library implemented the <samp>main(int argc, char
+  **argv)</samp> function, and called a <samp>wmain()</samp> function
+  which created the WApplication instance.
+</p>
+<p>
+  Wt 2.0.0 allows multiple applications to run within a single process.
+  Therefore, the <samp>WApplication::exec()</samp> approach was no longer
+  feasible. The new approach requires that:
+</p>
+
+  <ul>
+    <li>your main function should look like this:
+<pre>
+int main(int argc, char **argv)
+{
+  return Wt::WRun(argc, argv, &amp;createApplication);
+}
+</pre>
+    </li>
+    <li>where createApplication is a function of the following
+      signature:
+
+<pre>
+Wt::WApplication *createApplication(const Wt::WEnvironment&amp; env)
+{
+  // return a new application object.
+}
+</pre>
+
+    </li>
+  </ul>
+
+<h4>5) Configuration in /etc/wt/wt_config.xml</h4>
+
+<p>
+  Wt 2.0.0 uses a configuration file for a number of settings that 
+  could previously be configured at build time of the library, or
+  in the API. The latter functions are:
+</p>
+<ul>
+  <li><samp>WApplication::setMaximumRquestSize()</samp></li>
+  <li><samp>WApplication::setIdleTimeout()</samp></li>  
+</ul>
+
+<h4>6) Removed obsolete classes</h4>
+
+<p>
+  Wt 2.0.0 removed a number of classes that were still in the widget
+  tree, but have been obsoleted by more flexible classes:
+</p>
+<ul>
+  <li><samp>WAbstractTab</samp>, <samp>WButtonTab</samp>, and <samp>WTabWidget</samp> are obsoleted by the more flexible <samp>WMenu</samp>.</li>
+</ul>
+
+<h4>7) Deprecate boost::regex from WRegExpValidator API</h4>
+
+<p>
+  The constructor and methods that takes a boost::regex object in
+  the WRegExpValidator API have been deprecated, to remove the dependency
+  on boost from the public API. You should consider the std::string based
+  construtor and method instead.
+</p>
+
+<h4>8) WObject::emit() has been removed.</h4>
+
+<p>
+  Since Wt 1.99.1, we have removed WObject::emit() function. Instead,
+  you may simply call the signal with its arguments, or use the
+  explicit emit method (recommended).</p>
+
+<p>
+  To adapt your code, you should:
+</p>
+  <ul>
+    <li>Replace all <samp>emit(MySignal(...))</samp> with <samp>MySignal(...)</samp> or <samp>MySignal.emit(...)</samp>
+    </li>
+  </ul>
+
+<h4>9) WResource::streamResourceData() signature has changed.</h4>
+
+<p>
+  Since Wt 2.0.0, WResource::streamResourceData() returns a boolean value
+  which indicates if all data has been streamed. If you have reimplemented
+  WResource for your applications, you must update the signature and return
+  true.
+</p>
+<p>
+  The change is relevant only within the new server-push support that is
+  now in Wt 2.0.0. This allows you to continuously append to the content
+  of a resource.
+</p>
+
+<h4>10) Rename of WJavascriptSlot to JSlot.</h4>
+
+<hr />
+
+<h2>Release 1.1.7</h2>
+
+This release contains lots of additions and improvements, but should
+be completely backwards-compatible.
+
+<hr />
+
+<h2>Release 1.1.6</h2>
+
+There is one change which will impact the behaviour of current applications:
+Currently, on exit, by default the last widget updates are shown. So, no
+more good-bye message. This changes slightly when one needs to redirect()
+to a new location: not when WApplication::exec() returns, but during the
+same event handling as when calling WApplication::quit().
+
+<hr />
+
+<h2>Release 1.1.5</h2>
+
+Nothing special...
+
+<hr />
+
+<h2>Release 1.1.4</h2>
+
+Changes to impact everybody, since the previous release:
+
+<ul>
+<li>
+  The dependency for libxml++ (and its large number of dependencies) has
+  been dropped, and replaced by Xerces-C++ (which has no further dependencies).
+</li>
+<li>
+  Wt programs need to link against libwtfcgi.so, instead of libwt.so. In the
+  future Wt will also support different web-connnector systems besides
+  FastCGI.
+</li>
+<li>
+  The signatures of wmain() and WApplication constructor have changed:
+  new signatures are:
+  <ul>
+    <li><samp>int wmain(const WEnvironment&amp; env)</samp></li>
+    <li><samp>WApplication::WApplication(const WEnvironment&amp; env)</samp></li>
+ </ul>
+</li>
+</ul>
+
+<h3>Other changes:</h3>
+
+<ul>
+  <li>Support for unicode is implemented, but perhaps needs more testing
+  by non-Western people ? Only UTF-8 is supported currently.</li>
+  <li>Addition of a WTimer class -- see mission example.</li>
+  <li>Many bug fixes which should make Wt more robust against illegal CGI
+    requests (which are ignored), and now Wt should exit cleanly in more
+    (all?) circumstances.</li>
+  <li>Addition of feed-back for pending AJAX requests (does not work yet on
+    IE).</li>
+  <li>Support for style sheets is improved: now inline decoration styles
+    will override style sheet styles. See hangman or treelist examples.</li>
+  <li>The browser can be redirected to a new page. This is useful when the
+    application is terminated -- or to change during the application from
+    HTTP to HTTPS and back.</li>
+  <li>WValidationStatus API has changed -- less complicated now.</li>
+</ul>
+
+</body>
+</html>

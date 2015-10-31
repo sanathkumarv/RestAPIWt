@@ -1,0 +1,39 @@
+From 5f554400e51565703f1ef221a40e2034ed18e673 Mon Sep 17 00:00:00 2001
+From: Pau Garcia i Quiles <pgquiles@elpauer.org>
+Date: Sun, 15 Jun 2014 12:34:59 +0200
+Subject: [PATCH] Fix typo: unkown -> unknown
+
+---
+ src/Wt/WRasterImage-gm.C |    2 +-
+ src/fcgi/WServer.C       |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/Wt/WRasterImage-gm.C b/src/Wt/WRasterImage-gm.C
+index 4c44a37..1d6b327 100644
+--- a/src/Wt/WRasterImage-gm.C
++++ b/src/Wt/WRasterImage-gm.C
+@@ -612,7 +612,7 @@ void WRasterImage::drawImage(const WRectF& rect, const std::string& imgUri,
+   if (cImage == 0) {
+     LOG_ERROR("drawImage failed: "
+ 	      << (exception.reason ? exception.reason :
+-		  "(unkown reason)") << ", "
++		  "(unknown reason)") << ", "
+ 	      << (exception.description ? exception.description :
+ 		  "(unknown description)") );
+     return;
+diff --git a/src/fcgi/WServer.C b/src/fcgi/WServer.C
+index 29b9858..2d99ae2 100644
+--- a/src/fcgi/WServer.C
++++ b/src/fcgi/WServer.C
+@@ -71,7 +71,7 @@ struct WServer::Impl
+     } catch (...) {
+       LOG_ERROR_S(&server_,
+ 		  "fatal: dedicated session process for " << sessionId_ <<
+-		  ": caught unkown, unhandled exception.");
++		  ": caught unknown, unhandled exception.");
+ 
+       throw;
+     }
+-- 
+1.5.4.6
+

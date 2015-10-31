@@ -1,0 +1,26 @@
+From 5f656c707a5ea407ceb24485e0eef94af61dd327 Mon Sep 17 00:00:00 2001
+From: rgraebert <robert.graebert@graebert.com>
+Date: Tue, 2 Sep 2014 11:41:16 +0200
+Subject: [PATCH] Fix Typo for ieAlternative
+
+I have not tested this under IE7, but this seems to be a typo.
+---
+ src/web/skeleton/Wt.js |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/src/web/skeleton/Wt.js b/src/web/skeleton/Wt.js
+index 0841bcb..3da0c2e 100644
+--- a/src/web/skeleton/Wt.js
++++ b/src/web/skeleton/Wt.js
+@@ -3280,7 +3280,7 @@ function enableInternalPaths(initialHash) {
+ function ieAlternative(d)
+ {
+   if (d.ieAlternativeExecuted) return '0';
+-  self.emit(d.parentNode, 'IeAltnernative');
++  self.emit(d.parentNode, 'IeAlternative');
+   d.style.width = '';
+   d.ieAlternativeExecuted = true;
+   return '0';
+-- 
+1.5.4.6
+

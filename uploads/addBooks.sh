@@ -1,0 +1,1 @@
+curl -X POST -d "{'publisher': 'Gingko Press', 'subject':'Programming','title':'Java for Dummies','author':'Sherlak Homes','isbn':'01234567890','synopsis':'a good book for beginners','price':'5.0'}" http://192.168.1.191:8080/api/Book -H "Accept: application/json" -H "Content-type: application/json"

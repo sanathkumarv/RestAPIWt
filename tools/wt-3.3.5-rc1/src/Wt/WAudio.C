@@ -1,0 +1,29 @@
+// This may look like C code, but it's really -*- C++ -*-
+/*
+ * Copyright (C) 2010 Emweb bvba, Leuven, Belgium.
+ *
+ * See the LICENSE file for terms of use.
+ */
+#include "Wt/WAudio"
+#include "DomElement.h"
+
+using namespace Wt;
+
+WAudio::WAudio(WContainerWidget *parent)
+  : WAbstractMedia(parent)
+{ }
+
+DomElement *WAudio::createMediaDomElement()
+{
+  return DomElement::createNew(DomElement_AUDIO);
+}
+
+std::string WAudio::jsAudioRef() const
+{
+  return jsMediaRef();
+}
+
+DomElementType WAudio::domElementType() const
+{
+  return DomElement_AUDIO;
+}
