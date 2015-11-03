@@ -185,7 +185,8 @@ std::string RequestProcess::prepareTextBody(std::list<BSONObj> sr)
 }
 std::string RequestProcess::prepareEmailBody(std::list<BSONObj> sr)
 {
-	return prepareTextBody( sr);
+//	return prepareTextBody( sr);
+	return prepareHtmlBody(sr);
 }
 std::string RequestProcess::prepareHtmlBody(std::list<BSONObj> sr)
 {
@@ -288,6 +289,8 @@ bool RequestProcess::sendEmail(std::string emailid, std::string emailBody)
                 CSmtp mail;
                 mail.SetSMTPServer("smtp.gmail.com",465);
                 mail.SetSecurityType(USE_SSL);
+
+		mail.m_bHTML = true;
 std::cout << "To:" << emailid << std::endl;
 
                 mail.SetLogin("varamballysanathkumar@gmail.com");

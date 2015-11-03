@@ -5,7 +5,7 @@ Libs=-lpthread -lmongoclient -lboost_thread -lboost_system -lboost_regex -lstdc+
 Libs1= -lwt -lmongoclient  -lstdc++ -lm -lpthread -lssl -lcrypto -lwt
 #cli: cli.o
 #	gcc -o cli cli.o $(Libs)
-INSTDIR=/RestApiWt/restapi
+INSTDIR=/RestAPIWt/restapi
 SRCDIR=$(INSTDIR)/src
 OBJDIR=obj
 
